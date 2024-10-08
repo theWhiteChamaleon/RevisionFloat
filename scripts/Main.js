@@ -6,17 +6,15 @@
 define("EmersonTest/scripts/Main", [
     "DS/PlatformAPI/PlatformAPI",
     "DS/WAFData/WAFData",
-    "EmersonTest/components/dragAndDrop" // Add this line
 ],
-    function (PlatformAPI, WAFData,dragAndDrop) {
+    function (PlatformAPI, WAFData) {
 
         var myWidget = {
             ObjectId: "",
             name: "Amit",
             onLoad: function () {
                 alert("In ON load");
-                alert(dragAndDrop)
-                widget.body.innerhtml = dragAndDrop;
+                alert(dragAndDrop);
 
 
             },
