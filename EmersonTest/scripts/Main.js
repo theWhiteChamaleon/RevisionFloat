@@ -19,7 +19,7 @@ define("EmersonTest/scripts/Main", [
                 var temp =
                     `<div id="droppableContainer" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; color: blue;">
             <img 
-                src="../assets/images/drag-and-drop.png" 
+                src="https://thewhitechamaleon.github.io/RevisionFloat/EmersonTest/assets/images/drag-and-drop.png" 
                 alt="Drag and Drop" 
                 style="width: 60px; height: 60px;" 
             />
@@ -31,7 +31,7 @@ define("EmersonTest/scripts/Main", [
             </div>
             <div style="display: flex; align-items: center; margin-top: 20px;">
                 <img 
-                    src="../assets/images/I_WI_DataCollect108x144.png" 
+                    src="https://thewhitechamaleon.github.io/RevisionFloat/EmersonTest/assets/images/I_WI_DataCollect108x144.png" 
                     alt="Data Collect" 
                     style="width: 60px; height: 50px; margin-right: 10px;" 
                 />
