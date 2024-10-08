@@ -132,7 +132,7 @@ define("EmersonTest/scripts/Main", [
                     alert("Please drop only one object");
                     return;
                 } else {
-                    getCSRFToken(data);
+                    myWidget.getCSRFToken(data);
                 }
             }, getCSRFToken: function (data) {
                 // URLs
