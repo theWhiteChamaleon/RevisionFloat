@@ -83,13 +83,13 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                     const csrfToken = dataResp2.csrf.name;
                     const csrfValue = dataResp2.csrf.value;
                     const securityContextHeader = 'SecurityContext';
-                    const securityContextValue = encodeURIComponent("VPLMProjectLeader.0000000001.Micro Motion");
+                    const securityContextValue = "ctx%3A%3AVPLMProjectLeader.BU-0000001.Rosemount%20Flow";;
 
                     const myHeaders = new Object();
                     myHeaders[csrfToken] = csrfValue;
                     myHeaders[securityContextHeader] = securityContextValue;
 
-                    finalURL += data[0].objectID;
+                    finalURL += data[0].objectId;
                     console.log("finalURL", finalURL);
                     WAFData.authenticatedRequest(finalURL, {
                         method: "Get",
@@ -100,7 +100,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                         type: "json",
                         onComplete: function (dataResp3, headerResp3) {
                             console.log("dataResp3", dataResp3);
-                            card.showCard();
+                            card.showCard(dataResp3);
                         }
                     });
 
