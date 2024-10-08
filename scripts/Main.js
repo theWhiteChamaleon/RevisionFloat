@@ -14,7 +14,7 @@ define("EmersonTest/scripts/Main", [
             name: "Amit",
             onLoad: function () {
                 alert("In ON load");
-                alert(dragAndDrop);
+               
 
 
             },
