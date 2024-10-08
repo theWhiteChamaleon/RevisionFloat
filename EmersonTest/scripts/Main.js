@@ -6,9 +6,11 @@
 define("EmersonTest/scripts/Main", [
     "DS/PlatformAPI/PlatformAPI",
     "DS/WAFData/WAFData",
-    "EmersonTest/components/dragAndDrop"
+    "EmersonTest/components/dragAndDrop",
+    "DS/DataDragAndDrop/DataDragAndDrop",
+    "css!EmersonTest/styles/revstyles.css"
 ],
-    function (PlatformAPI, WAFData, dragAndDrop) {
+    function (PlatformAPI, WAFData, dragAndDrop,DataDragAndDrop) {
 
         var myWidget = {
             ObjectId: "",
@@ -38,6 +40,31 @@ define("EmersonTest/scripts/Main", [
                 <span style="font-size: 20px; color: black;">Click here to search content</span>
             </div>
         </div>`;
+
+        let droppableContainer = document.getElementById("droppableContainer");
+        DataDragAndDrop.droppable(droppableContainer, {
+            drop: function (data) {
+                console.log("data", data)
+            droppableContainer.classList.add("drag-over");
+             
+              var dropedObject = JSON.parse(data);
+  
+            //   var objId = dropedObject.data["items"][0].objectId;
+            //   that.objectId = objId;
+            //   PlatformAPI.publish("DropRCAID", that.objectId) //ZSIAHBH : PLMRM-9640 Refresh - Sync
+            //   that.dropCADisplayName = dropedObject.data["items"][0].displayName;
+            //   that.isBtnCAReportDisabled = false;
+            //   that.callAllMethods();
+            },
+            enter: function () {
+                console.log("Enter");
+                    droppableContainer.classList.add("drag-over");
+            },
+            leave: function () {
+                console.log("leave");
+                droppableContainer.classList.remove("drag-over");
+            },
+          });
 
         widget.body.innerHTML = temp;
 
