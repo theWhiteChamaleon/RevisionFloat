@@ -42,6 +42,8 @@ define("EmersonTest/scripts/Main", [
         </div>`;
 
         let droppableContainer = document.getElementById("droppableContainer");
+        widget.body.innerHTML = temp;
+        debugger;
         // DataDragAndDrop.droppable(droppableContainer, {
         //     drop: function (data) {
         //         console.log("data", data)
@@ -66,7 +68,7 @@ define("EmersonTest/scripts/Main", [
         //     },
         //   });
 
-        widget.body.innerHTML = temp;
+        
 
 
             },
