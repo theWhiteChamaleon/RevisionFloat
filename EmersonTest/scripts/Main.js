@@ -14,7 +14,7 @@ define("EmersonTest/scripts/Main", [
         var myWidget = {
             
             onLoad: function () {
-                alert("In ON load 3");
+                // alert("In ON load 3");
                 dragAndDropComp.showDroppable();
 
 
