@@ -1,6 +1,9 @@
 define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDrop"], function (DataDragAndDrop) {
-    var temp = 
-    `<div id="droppableContainer" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; color: blue;">
+
+    var dragAndDropComp = {
+        showDroppable: function () {
+            var temp =
+                `<div id="droppableContainer" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; color: blue;">
             <img 
                 src="../assets/images/drag-and-drop.png" 
                 alt="Drag and Drop" 
@@ -21,4 +24,11 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                 <span style="font-size: 20px; color: black;">Click here to search content</span>
             </div>
         </div>`;
+        }
+    }
+    widget.dragAndDropComp = dragAndDropComp;
+    return dragAndDropComp;
+
+
+
 });
