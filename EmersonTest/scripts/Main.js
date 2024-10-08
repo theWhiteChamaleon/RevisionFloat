@@ -5,9 +5,10 @@
 // });
 define("EmersonTest/scripts/Main", [
     "DS/DataDragAndDrop/DataDragAndDrop",
+    "DS/WAFData/WAFData",
     "css!EmersonTest/styles/revstyles.css"
 ],
-    function (DataDragAndDroplib) {
+    function (DataDragAndDroplib, WAFData) {
 
         var myWidget = {
             ObjectId: "",
@@ -131,8 +132,103 @@ define("EmersonTest/scripts/Main", [
                     alert("Please drop only one object");
                     return;
                 } else {
-
+                    getCSRFToken(data);
                 }
+            }, getCSRFToken: function(data) {
+
+                // URLs
+                let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
+                let finalURL = "https://r1132101608061-usw1-space.3dexperience.3ds.com/enovia//resources/v1/modeler/dseng/dseng:EngItem/";
+
+                WAFData.proxifiedRequest(csrfURL, {
+                    method: "Get",
+                    headers: {
+
+                    },
+                    data: {
+
+                    },
+                    timeout: 150000,
+                    type: "json",
+                    onComplete: function (dataResp2, headerResp2) {
+
+                        const csrfToken = dataResp2.csrf.name;
+                        const csrfValue = dataResp2.csrf.value;
+                        const securityContextHeader = 'SecurityContext';
+                        const securityContextValue = encodeURIComponent(widget.getValue("ctx"));
+
+                        const myHeaders = new Object();
+                        myHeaders[csrfToken] = csrfValue;
+                        myHeaders[securityContextHeader] = securityContextValue;
+
+                        finalURL += data.objectID;
+                        console.log("finalURL",finalURL);
+                        WAFData.authenticatedRequest(finalURL, {
+                            method: "Get",
+                            headers: myHeaders,
+                            data: {
+                            },
+                            timeout: 150000,
+                            type: "json",
+                            onComplete: function (dataResp3, headerResp3) {
+                                alert(dataResp3);
+                                // let changeActionList = dataResp3.changeAction;
+                                // for (let changeActionCount = 0; changeActionCount < changeActionList.length; changeActionCount++) {
+                                //     changeAction = changeActionList[changeActionCount];
+                                //     let source = changeAction.source;
+                                //     let relativePathUrl = changeAction.relativePath;
+
+
+                                //     let caPropURL = source + relativePathUrl;
+
+                                    // WAFData.authenticatedRequest(caPropURL, {
+                                    //     method: "Get",
+                                    //     headers: myHeaders,
+                                    //     data: {
+
+                                    //     },
+                                    //     timeout: 150000,
+                                    //     type: "json",
+                                    //     onComplete: function (dataResp4, headerResp4) {
+                                    //         let caTitle = dataResp4.title;
+                                    //         bodyhtml += "<div class='grid-items' style='font-size: small;background-color: #FFFBDF;padding: 10px;'>";
+                                    //         bodyhtml += "<div><b>Title :</b> " + caTitle + "</div>";
+                                    //         bodyhtml += "<div><b>Name :</b> " + dataResp4.name + "</div>";
+                                    //         bodyhtml += "<div><b>Owner :</b> " + dataResp4.owner + "</div>";
+                                    //         bodyhtml += "<div><b>Collab Space :</b> " + dataResp4.collabSpace + "</div>";
+                                    //         bodyhtml += "</div>";
+
+                                    //         if (changeActionCount == changeActionList.length - 1) {
+                                    //             bodyhtml += "</div>"
+                                    //             widget.body.innerHTML = bodyhtml;
+                                    //         }
+
+                                    //     },
+                                    //     onFailure: function (error4, responseDOMString4, headerResp4) {
+                                    //         widget.bodyhtml.innerHTML = "Error : "+error4;
+                                    //         debugger;
+                                    //     }
+                                    // });
+
+                                }
+
+
+
+                            },
+                            onFailure: function (error3, responseDOMString3, headerResp3) {
+                                widget.bodyhtml.innerHTML = "Error : "+error3;
+                                debugger;
+
+                            }
+                        });
+                    },
+                    onFailure: function (error2, responseDOMString2, headerResp2) {
+                        widget.bodyhtml.innerHTML = "Error : "+error2;
+                        debugger;
+
+                    }
+                });
+
             }
             // getData: function () {
             //     let spaceURL = "https://3dxr21x-d4.emrsn.org:447/3dspace";
