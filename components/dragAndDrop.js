@@ -24,6 +24,8 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                 <span style="font-size: 20px; color: black;">Click here to search content</span>
             </div>
         </div>`;
+
+            return temp;
         }
     }
     widget.dragAndDropComp = dragAndDropComp;
