@@ -4,13 +4,10 @@
 //     }
 // });
 define("EmersonTest/scripts/Main", [
-    "DS/PlatformAPI/PlatformAPI",
-    "DS/WAFData/WAFData",
-    "EmersonTest/components/dragAndDrop",
     "DS/DataDragAndDrop/DataDragAndDrop",
     "css!EmersonTest/styles/revstyles.css"
 ],
-    function (PlatformAPI, WAFData, dragAndDrop,DataDragAndDrop) {
+    function (DataDragAndDroplib) {
 
         var myWidget = {
             ObjectId: "",
@@ -41,10 +38,10 @@ define("EmersonTest/scripts/Main", [
             </div>
         </div>`;
 
-        let droppableContainer = document.getElementById("droppableContainer");
+        var droppableContainer = document.getElementById("droppableContainer");
         widget.body.innerHTML = temp;
         debugger;
-        DataDragAndDrop.droppable(droppableContainer, {
+        DataDragAndDroplib.droppable(droppableContainer, {
             drop: function (data) {
                 console.log("data", data)
             droppableContainer.classList.add("drag-over");
