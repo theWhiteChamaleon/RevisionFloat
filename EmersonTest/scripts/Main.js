@@ -16,7 +16,7 @@ define("EmersonTest/scripts/Main", [
                 alert("In ON load 2");
 
                 var temp =
-                    `<div id="droppableContainer" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; color: blue;">
+                    `<div class="droppableContainer" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; color: blue;">
             <img 
                 src="https://thewhitechamaleon.github.io/RevisionFloat/EmersonTest/assets/images/drag-and-drop.png" 
                 alt="Drag and Drop" 
@@ -38,7 +38,7 @@ define("EmersonTest/scripts/Main", [
             </div>
         </div>`;
 
-        var droppableContainer = document.getElementById("droppableContainer");
+        var droppableContainer = widget.body.querySelector('.droppableContainer');
         widget.body.innerHTML = temp;
         debugger;
         DataDragAndDroplib.droppable(droppableContainer, {
