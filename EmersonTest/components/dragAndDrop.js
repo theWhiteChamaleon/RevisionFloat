@@ -1,8 +1,9 @@
-define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData",], function (DataDragAndDrop,WAFData) {
+define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData", "EmersonTest/components/card"], 
+    function (DataDragAndDrop, WAFData, card) {
 
     var dragAndDropComp = {
         showDroppable: function () {
-            alert("In ON load 4");
+            // alert("In ON load 4");
 
             var temp =
                 `<div class="droppableContainer" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; color: blue;">
@@ -99,6 +100,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                         type: "json",
                         onComplete: function (dataResp3, headerResp3) {
                             console.log("dataResp3", dataResp3);
+                            card.showCard();
                         }
                     });
 
