@@ -1,4 +1,4 @@
-define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDrop"], function (DataDragAndDrop) {
+define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData",], function (DataDragAndDrop,WAFData) {
 
     var dragAndDropComp = {
         showDroppable: function () {
