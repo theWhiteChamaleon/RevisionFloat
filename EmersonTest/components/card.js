@@ -1,7 +1,7 @@
 define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData",], function (DataDragAndDrop,WAFData) {
 
     var card = {
-        showCard: function () {
+        showCard: function (data) {
             // alert("In ON load 4");
 
             var metadata = {
@@ -10,30 +10,20 @@ define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop", "DS
                 author: "John Doe",
                 date: "2023-10-01"
             };
+            if (data) {
+                metadata = data;
+            }
+            
 
-            var cardHTML = `
-                <div class="container">
-                    <div class="row">
-                        <div class="col s12 m6">
-                            <div class="card horizontal">
-                                <div class="card-image">
-                                    <img src="https://thewhitechamaleon.github.io/RevisionFloat/EmersonTest/assets/images/PhysicalProductLarge.png" alt="Sample Image">
-                                </div>
-                                <div class="card-stacked">
-                                    <div class="card-content">
-                                        <span class="card-title">${metadata.title}</span>
-                                        <p><strong>Description:</strong> ${metadata.description}</p>
-                                        <p><strong>Author:</strong> ${metadata.author}</p>
-                                        <p><strong>Date:</strong> ${metadata.date}</p>
-                                    </div>
-                                    <div class="card-action">
-                                        <a href="#">Click here to search content</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
+            var cardHTML = '<div class="container"><div class="row"><div class="col s12 m6"><div class="card horizontal"><div class="card-image" style="flex: 1;"><img src="https://thewhitechamaleon.github.io/RevisionFloat/EmersonTest/assets/images/PhysicalProductLarge.png" alt="Sample Image" style="width: 100%;"></div><div class="card-stacked" style="flex: 1;"><div class="card-content">';
+
+            for (var key in metadata) {
+                if (metadata.hasOwnProperty(key)) {
+                    cardHTML += `<p><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${metadata[key]}</p>`;
+                }
+            }
+
+            cardHTML += '</div></div></div></div></div></div>';
 
 
             widget.body.innerHTML = cardHTML;
