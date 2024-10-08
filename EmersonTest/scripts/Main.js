@@ -44,29 +44,29 @@ define("EmersonTest/scripts/Main", [
         let droppableContainer = document.getElementById("droppableContainer");
         widget.body.innerHTML = temp;
         debugger;
-        // DataDragAndDrop.droppable(droppableContainer, {
-        //     drop: function (data) {
-        //         console.log("data", data)
-        //     droppableContainer.classList.add("drag-over");
+        DataDragAndDrop.droppable(droppableContainer, {
+            drop: function (data) {
+                console.log("data", data)
+            droppableContainer.classList.add("drag-over");
              
-        //       var dropedObject = JSON.parse(data);
+              var dropedObject = JSON.parse(data);
   
-        //     //   var objId = dropedObject.data["items"][0].objectId;
-        //     //   that.objectId = objId;
-        //     //   PlatformAPI.publish("DropRCAID", that.objectId) //ZSIAHBH : PLMRM-9640 Refresh - Sync
-        //     //   that.dropCADisplayName = dropedObject.data["items"][0].displayName;
-        //     //   that.isBtnCAReportDisabled = false;
-        //     //   that.callAllMethods();
-        //     },
-        //     enter: function () {
-        //         console.log("Enter");
-        //             droppableContainer.classList.add("drag-over");
-        //     },
-        //     leave: function () {
-        //         console.log("leave");
-        //         droppableContainer.classList.remove("drag-over");
-        //     },
-        //   });
+            //   var objId = dropedObject.data["items"][0].objectId;
+            //   that.objectId = objId;
+            //   PlatformAPI.publish("DropRCAID", that.objectId) //ZSIAHBH : PLMRM-9640 Refresh - Sync
+            //   that.dropCADisplayName = dropedObject.data["items"][0].displayName;
+            //   that.isBtnCAReportDisabled = false;
+            //   that.callAllMethods();
+            },
+            enter: function () {
+                console.log("Enter");
+                    droppableContainer.classList.add("drag-over");
+            },
+            leave: function () {
+                console.log("leave");
+                droppableContainer.classList.remove("drag-over");
+            },
+          });
 
         
 
