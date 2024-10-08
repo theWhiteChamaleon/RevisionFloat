@@ -82,13 +82,13 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                     const csrfToken = dataResp2.csrf.name;
                     const csrfValue = dataResp2.csrf.value;
                     const securityContextHeader = 'SecurityContext';
-                    const securityContextValue = encodeURIComponent(widget.getValue("ctx"));
+                    const securityContextValue = encodeURIComponent("VPLMProjectLeader.0000000001.Micro Motion");
 
                     const myHeaders = new Object();
                     myHeaders[csrfToken] = csrfValue;
                     myHeaders[securityContextHeader] = securityContextValue;
 
-                    finalURL += data.objectID;
+                    finalURL += data[0].objectID;
                     console.log("finalURL", finalURL);
                     WAFData.authenticatedRequest(finalURL, {
                         method: "Get",
