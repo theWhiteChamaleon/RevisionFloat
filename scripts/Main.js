@@ -3,28 +3,16 @@
 //         vue: "./EmersonTest/Dependencies/vue/vue"
 //     }
 // });
-define("EmersonTest/scripts/Main", ["vue",
+define("EmersonTest/scripts/Main", [
     "DS/PlatformAPI/PlatformAPI",
     "DS/WAFData/WAFData",
-    "css!EmersonTest/Dependencies/bootstrap/css/bootstrap.css"],
-    function (Vue, PlatformAPI, WAFData) {
+],
+    function (PlatformAPI, WAFData) {
 
         var myWidget = {
             ObjectId: "",
             name: "Amit",
             onLoad: function () {
-                alert("In Onloadcrx" + widget.getValue("ctx"));
-                widget.setTitle("");
-                myWidget.getData();
-
-                var template = `<div id="app" class="container">
-            <div class="row">
-                <div class="col">"{{name}}"</div>
-                <div class="col">test 2</div>
-            </div>
-        </div>`
-
-
 
                 widget.body.innerHTML = template;
 
@@ -34,49 +22,49 @@ define("EmersonTest/scripts/Main", ["vue",
             updateWidget: function () {
                 alert("In updateWidget");
             },
-            getData: function () {
-                let spaceURL = "https://3dxr21x-d4.emrsn.org:447/3dspace";
-                let urlWAF = spaceURL + "/EmersonTestModel/EmersonTestService/getTestData";
+            // getData: function () {
+            //     let spaceURL = "https://3dxr21x-d4.emrsn.org:447/3dspace";
+            //     let urlWAF = spaceURL + "/EmersonTestModel/EmersonTestService/getTestData";
 
-                WAFData.authenticatedRequest(urlWAF, {
-                    method: "Get",
-                    headers: {
-                        SecurityContext: "ctx::MCO Coordinator.MMH.GLOBAL"
-                    },
-                    data: {
-                        type: "FSGEngineeringDrawing",
-                        limit: "50"
-                    },
-                    timeout: 150000,
-                    type: "json",
-                    onComplete: function (dataResp, headerResp) {
-                        let tableData = `<div class="table-responsive"><table class="table table-striped">
-                    <thead>`;
-                        let sampleData = dataResp.data[0];
-                        console.log("sampleData", sampleData);
-                        let headers = Object.keys(sampleData);
-                        for (header of headers) {
-                            tableData += `<th>${header}</th>`;
-                        }
-                        tableData += `</thead><tbody>`;
-                        for (dataJson of dataResp.data) {
-                            tableData += `<tr>`;
-                            for (value of Object.values(dataJson)) {
-                                tableData += `<td>${value}</td>`;
-                            }
-                            tableData += `</tr>`;
-                        }
+            //     WAFData.authenticatedRequest(urlWAF, {
+            //         method: "Get",
+            //         headers: {
+            //             SecurityContext: "ctx::MCO Coordinator.MMH.GLOBAL"
+            //         },
+            //         data: {
+            //             type: "FSGEngineeringDrawing",
+            //             limit: "50"
+            //         },
+            //         timeout: 150000,
+            //         type: "json",
+            //         onComplete: function (dataResp, headerResp) {
+            //             let tableData = `<div class="table-responsive"><table class="table table-striped">
+            //         <thead>`;
+            //             let sampleData = dataResp.data[0];
+            //             console.log("sampleData", sampleData);
+            //             let headers = Object.keys(sampleData);
+            //             for (header of headers) {
+            //                 tableData += `<th>${header}</th>`;
+            //             }
+            //             tableData += `</thead><tbody>`;
+            //             for (dataJson of dataResp.data) {
+            //                 tableData += `<tr>`;
+            //                 for (value of Object.values(dataJson)) {
+            //                     tableData += `<td>${value}</td>`;
+            //                 }
+            //                 tableData += `</tr>`;
+            //             }
 
-                        tableData += `</thead></table></div>`;
-                        widget.body.innerHTML = tableData;
-                    },
-                    onFailure: function (error, responseDOMString, headerResp) {
-                        // if (typeof options.onFailure === "function") {
-                        //     options.onFailure(error, responseDOMString, headerResp, options.callbackData);
-                        // }
-                    }
-                });
-            }
+            //             tableData += `</thead></table></div>`;
+            //             widget.body.innerHTML = tableData;
+            //         },
+            //         onFailure: function (error, responseDOMString, headerResp) {
+            //             // if (typeof options.onFailure === "function") {
+            //             //     options.onFailure(error, responseDOMString, headerResp, options.callbackData);
+            //             // }
+            //         }
+            //     });
+            // }
 
         }
         widget.myWidget = myWidget;
