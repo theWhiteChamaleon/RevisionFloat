@@ -38,15 +38,18 @@ define("EmersonTest/scripts/Main", [
             </div>
         </div>`;
 
-        var droppableContainer = widget.body.querySelector('.droppableContainer');
+        
         widget.body.innerHTML = temp;
+        var droppableContainer = widget.body.querySelector('.droppableContainer');        
         debugger;
         DataDragAndDroplib.droppable(droppableContainer, {
             drop: function (data) {
                 console.log("data", data)
-            droppableContainer.classList.add("drag-over");
+                droppableContainer.classList.remove("drag-over");
              
               var dropedObject = JSON.parse(data);
+              myWidget.getDroppedObjectInfo(dropedObject.data.items) ;
+              
   
             //   var objId = dropedObject.data["items"][0].objectId;
             //   that.objectId = objId;
@@ -70,10 +73,10 @@ define("EmersonTest/scripts/Main", [
 
             },
             updateWidget: function () {
-                alert("In updateWidget");
+                alert("In updateWidget 2");
 
                 var temp =
-                    `<div id="droppableContainer" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; color: blue;">
+                    `<div class="droppableContainer" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; color: blue;">
             <img 
                 src="https://thewhitechamaleon.github.io/RevisionFloat/EmersonTest/assets/images/drag-and-drop.png" 
                 alt="Drag and Drop" 
@@ -95,8 +98,42 @@ define("EmersonTest/scripts/Main", [
             </div>
         </div>`;
 
-        let droppableContainer = document.getElementById("droppableContainer");
+         widget.body.innerHTML = temp;
+        var droppableContainer = widget.body.querySelector('.droppableContainer');
+                DataDragAndDroplib.droppable(droppableContainer, {
+            drop: function (data) {
+                console.log("data", data)
+            droppableContainer.classList.add("drag-over");
+             
+              
+              var dropedObject = JSON.parse(data);
+              myWidget.getDroppedObjectInfo(dropedObject.data.items) ;
+  
+            //   var objId = dropedObject.data["items"][0].objectId;
+            //   that.objectId = objId;
+            //   PlatformAPI.publish("DropRCAID", that.objectId) //ZSIAHBH : PLMRM-9640 Refresh - Sync
+            //   that.dropCADisplayName = dropedObject.data["items"][0].displayName;
+            //   that.isBtnCAReportDisabled = false;
+            //   that.callAllMethods();
             },
+            enter: function () {
+                console.log("Enter");
+                    droppableContainer.classList.add("drag-over");
+            },
+            leave: function () {
+                console.log("leave");
+                droppableContainer.classList.remove("drag-over");
+            },
+          });
+        debugger;
+            }, getDroppedObjectInfo: function (data) {
+                if (data.length > 1) {
+                    alert("Please drop only one object");
+                    return;
+                } else {
+
+                }
+            }
             // getData: function () {
             //     let spaceURL = "https://3dxr21x-d4.emrsn.org:447/3dspace";
             //     let urlWAF = spaceURL + "/EmersonTestModel/EmersonTestService/getTestData";
