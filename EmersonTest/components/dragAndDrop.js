@@ -62,16 +62,49 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                 alert("Please drop only one object");
                 return;
             } else {
-                let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
-                finalURL += data[0].objectId;
-                finalURL += "?$mask=dsmveng:EngItemMask.Details";
-                let APIDetails = {method:"Get",body:{}};
-                let onComplete = function () {
-                    console.log("response", response);
+                dragAndDropComp.getCSRFToken(data);
+            }
+        }, getCSRFToken: function (data) {
+            // URLs
+            let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
+            let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
+
+            WAFData.proxifiedRequest(csrfURL, {
+                method: "Get",
+                headers: {
+
+                },
+                data: {
+
+                },
+                timeout: 150000,
+                type: "json",
+                onComplete: function (dataResp2, headerResp2) {
+                    const csrfToken = dataResp2.csrf.name;
+                    const csrfValue = dataResp2.csrf.value;
+                    const securityContextHeader = 'SecurityContext';
+                    const securityContextValue = "ctx%3A%3AVPLMProjectLeader.BU-0000001.Rosemount%20Flow";;
+
+                    const myHeaders = new Object();
+                    myHeaders[csrfToken] = csrfValue;
+                    myHeaders[securityContextHeader] = securityContextValue;
+
+                    finalURL += data[0].objectId;
+                    finalURL += "?$mask=dsmveng:EngItemMask.Details";
+                    console.log("finalURL", finalURL);
+                    WAFData.authenticatedRequest(finalURL, {
+                        method: "Get",
+                        headers: myHeaders,
+                        data: {
+                        },
+                        timeout: 150000,
+                        type: "json",
+                        onComplete: function (dataResp3, headerResp3) {
+                            console.log("dataResp3", dataResp3);
 
 
                             const valuesToDisplay = ["title","description","type","revision","state","owner","organization","collabspace"];
-                            droppedData = response.member[0];
+                            droppedData = dataResp3.member[0];
                             var filteredData = {};
                             function extractValues(obj, keys) {
                                 let result = {};
@@ -94,83 +127,17 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                             console.log("filteredData", filteredData);
 
                             card.showCard(filteredData);
-                };
-                
-                let response = dragAndDropComp.getCSRFToken(data,finalURL,APIDetails,onComplete);
-                
-                
-            }
-        }, getCSRFToken: function (data, finalURL,APIDetails, cbOncom) {
-            // URLs
-            let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
-           
-
-            WAFData.proxifiedRequest(csrfURL, {
-                method: "Get",
-                headers: {
-
-                },
-                data: {
-
-                },
-                timeout: 150000,
-                type: "json",
-                onComplete: function (dataResp2, headerResp2) {
-                    const csrfToken = dataResp2.csrf.name;
-                    const csrfValue = dataResp2.csrf.value;
-                    const securityContextHeader = 'SecurityContext';
-                    const securityContextValue = "ctx%3A%3AVPLMProjectLeader.BU-0000001.Rosemount%20Flow";;
-
-                    const myHeaders = new Object();
-                    myHeaders[csrfToken] = csrfValue;
-                    myHeaders[securityContextHeader] = securityContextValue;
-
-                    
-                    console.log("finalURL", finalURL);
-                    WAFData.authenticatedRequest(finalURL, {
-                        method: APIDetails.method,
-                        headers: myHeaders,
-                        data: APIDetails.body,
-                        timeout: 150000,
-                        type: "json",
-                        onComplete: function (dataResp3, headerResp3) {
-                            
-                            if (typeof cnOnCom == "function") {
-                                cbOncom(dataResp3);
-                            }
-                            // return dataResp3;
-                            
                         }
                     });
 
                 }
             });
-        },buildCardData (dataRestp) {
-            
         }, getAllRevisions: function (data) {
-
-            let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dslc/version/getGraph";
-            finalURL += data[0].objectId;
-            finalURL += "?$mask=dsmveng:EngItemMask.Details";
-            let requestBody ={
-                "data": [
-                  {
-                    "id": data[0].objectId,
-                    "identifier": data[0].objectId,
-                    "type": data[0].type,
-                    "source": "https://example.3ds.com:443/3DSpace",
-                    "relativePath": "/resources/v1/modeler/dseng/dseng:EngItem/F718B05686760000926EEB5BE7400900"
-                  }
-                ]
-              }
-            let APIDetails = {method:"Post",body:requestBody};
-            
-            let response = dragAndDropComp.getCSRFToken(data,finalURL,APIDetails);
 
         }, getAllWhereUsedOfRevison: function(data) {
 
         }, prepareDataForTable: function (data) {
-
+            
         }
     }
     widget.dragAndDropComp = dragAndDropComp;
