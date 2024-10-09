@@ -1,3 +1,20 @@
 .drag-over {
     border: 2px dotted rgb(118, 118, 253);
 }
+
+.card-container {
+    width: 90%;
+    margin: auto;
+}
+
+.card-boundary{
+    box-shadow: 10px 10px 5px lightblue;
+    border: 1px solid #a1a0a0;
+    overflow: auto;
+}
+
+.card-content{
+    display: grid;
+    grid-template-columns: repeat(3,auto);
+    gap:10px
+}
