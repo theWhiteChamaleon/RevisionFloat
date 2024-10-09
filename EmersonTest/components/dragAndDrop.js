@@ -64,7 +64,9 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
             } else {
                 dragAndDropComp.getCSRFToken(data);
             }
-        }, getCSRFToken: function (data) {
+        },csrfHeaders:[
+
+        ], getCSRFToken: function (data) {
             // URLs
             let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
             let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
@@ -88,6 +90,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                     const myHeaders = new Object();
                     myHeaders[csrfToken] = csrfValue;
                     myHeaders[securityContextHeader] = securityContextValue;
+                    dragAndDropComp.csrfHeaders = myHeaders;
 
                     finalURL += data[0].objectId;
                     finalURL += "?$mask=dsmveng:EngItemMask.Details";
@@ -103,7 +106,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                             console.log("dataResp3", dataResp3);
 
 
-                            const valuesToDisplay = ["title","description","type","revision","state","owner","organization","collabspace"];
+                            const valuesToDisplay = ["title","description","type","revision","state","owner","organization","collabspace","partNumber"];
                             droppedData = dataResp3.member[0];
                             var filteredData = {};
                             function extractValues(obj, keys) {
@@ -127,6 +130,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                             console.log("filteredData", filteredData);
 
                             card.showCard(filteredData);
+                            dragAndDropComp.getAllRevisions(dataResp3.member[0]);
                         }
                     });
 
@@ -134,6 +138,27 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
             });
         }, getAllRevisions: function (data) {
 
+            let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dslc/version/getGraph";
+            WAFData.authenticatedRequest(finalURL, {
+                method: "Post",
+                headers: droppableContainer.csrfHeaders,
+                data: {
+                    "data": [
+                      {
+                        "id": data.objectId,
+                        "identifier": data.objectId,
+                        "type": data.type,
+                        "source": "https://oi000186152-us1-space.3dexperience.3ds.com/enovia",
+                        "relativePath": "/resources/v1/modeler/dseng/dseng:EngItem/"+data.objectId
+                      }
+                    ]
+                  },
+                timeout: 150000,
+                type: "json",
+                onComplete: function (dataResp3, headerResp2) {
+                    console.log("dataResp2", dataResp2);
+                }
+            });
         }, getAllWhereUsedOfRevison: function(data) {
 
         }, prepareDataForTable: function (data) {
