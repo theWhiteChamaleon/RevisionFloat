@@ -62,12 +62,45 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                 alert("Please drop only one object");
                 return;
             } else {
-                dragAndDropComp.getCSRFToken(data);
+                let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
+                finalURL += data[0].objectId;
+                finalURL += "?$mask=dsmveng:EngItemMask.Details";
+                let APIDetails = {method:"Get",body:{}};
+                
+                let response = dragAndDropComp.getCSRFToken(data,finalURL,APIDetails);
+                console.log("response", response);
+
+
+                            const valuesToDisplay = ["title","description","type","revision","state","owner","organization","collabspace"];
+                            droppedData = response.member[0];
+                            var filteredData = {};
+                            function extractValues(obj, keys) {
+                                let result = {};
+                                for (let key in obj) {
+                                    if (obj.hasOwnProperty(key)) {
+                                        if (keys.includes(key)) {
+                                            result[key] = obj[key];
+                                        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                                            let nestedResult = extractValues(obj[key], keys);
+                                            if (Object.keys(nestedResult).length > 0) {
+                                                result = { ...result, ...nestedResult };
+                                            }
+                                        }
+                                    }
+                                }
+                                return result;
+                            }
+
+                            filteredData = extractValues(droppedData, valuesToDisplay);
+                            console.log("filteredData", filteredData);
+
+                            card.showCard(filteredData);
+                
             }
-        }, getCSRFToken: function (data) {
+        }, getCSRFToken: function (data, finalURL,APIDetails) {
             // URLs
             let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
-            let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
+           
 
             WAFData.proxifiedRequest(csrfURL, {
                 method: "Get",
@@ -89,23 +122,28 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                     myHeaders[csrfToken] = csrfValue;
                     myHeaders[securityContextHeader] = securityContextValue;
 
-                    finalURL += data[0].objectId;
+                    
                     console.log("finalURL", finalURL);
                     WAFData.authenticatedRequest(finalURL, {
-                        method: "Get",
+                        method: APIDetails.method,
                         headers: myHeaders,
-                        data: {
-                        },
+                        data: APIDetails.body,
                         timeout: 150000,
                         type: "json",
                         onComplete: function (dataResp3, headerResp3) {
-                            console.log("dataResp3", dataResp3);
-                            card.showCard(dataResp3.member[0]);
+                            
+                            return dataResp3;
                         }
                     });
 
                 }
             });
+        }, getAllRevisions: function (data) {
+
+        }, getAllWhereUsedOfRevison: function(data) {
+
+        }, prepareDataForTable: function (data) {
+
         }
     }
     widget.dragAndDropComp = dragAndDropComp;
