@@ -100,7 +100,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                         type: "json",
                         onComplete: function (dataResp3, headerResp3) {
                             console.log("dataResp3", dataResp3);
-                            card.showCard(dataResp3);
+                            card.showCard(dataResp3.member[0]);
                         }
                     });
 
