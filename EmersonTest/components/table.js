@@ -2,7 +2,7 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
 
     var whereUsedTable = {
         showTable: function (data) {
-            // alert("In ON load 4");
+           
 
             var tableHTML = `
                 <div class="card-container">
@@ -20,6 +20,29 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
 
             widget.body.insertAdjacentHTML('beforeend', tableHTML);
            
+        }, getAllRevisions: function (data) {
+
+            let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dslc/version/getGraph";
+            WAFData.authenticatedRequest(finalURL, {
+                method: "Post",
+                headers: droppableContainer.csrfHeaders,
+                data: {
+                    "data": [
+                      {
+                        "id": data.objectId,
+                        "identifier": data.objectId,
+                        "type": data.type,
+                        "source": "https://oi000186152-us1-space.3dexperience.3ds.com/enovia",
+                        "relativePath": "/resources/v1/modeler/dseng/dseng:EngItem/"+data.objectId
+                      }
+                    ]
+                  },
+                timeout: 150000,
+                type: "json",
+                onComplete: function (dataResp3, headerResp2) {
+                    console.log("dataResp2", dataResp2);
+                }
+            });
         }
     }
     widget.whereUsedTable = whereUsedTable;
