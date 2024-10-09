@@ -66,9 +66,8 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                 finalURL += data[0].objectId;
                 finalURL += "?$mask=dsmveng:EngItemMask.Details";
                 let APIDetails = {method:"Get",body:{}};
-                
-                let response = dragAndDropComp.getCSRFToken(data,finalURL,APIDetails);
-                console.log("response", response);
+                let onComplete = function () {
+                    console.log("response", response);
 
 
                             const valuesToDisplay = ["title","description","type","revision","state","owner","organization","collabspace"];
@@ -95,9 +94,13 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                             console.log("filteredData", filteredData);
 
                             card.showCard(filteredData);
+                };
+                
+                let response = dragAndDropComp.getCSRFToken(data,finalURL,APIDetails,onComplete);
+                
                 
             }
-        }, getCSRFToken: function (data, finalURL,APIDetails) {
+        }, getCSRFToken: function (data, finalURL,APIDetails, cbOncom) {
             // URLs
             let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
            
@@ -132,13 +135,37 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                         type: "json",
                         onComplete: function (dataResp3, headerResp3) {
                             
-                            return dataResp3;
+                            if (typeof cnOnCom == "function") {
+                                cbOncom(dataResp3);
+                            }
+                            // return dataResp3;
+                            
                         }
                     });
 
                 }
             });
+        },buildCardData (dataRestp) {
+            
         }, getAllRevisions: function (data) {
+
+            let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dslc/version/getGraph";
+            finalURL += data[0].objectId;
+            finalURL += "?$mask=dsmveng:EngItemMask.Details";
+            let requestBody ={
+                "data": [
+                  {
+                    "id": data[0].objectId,
+                    "identifier": data[0].objectId,
+                    "type": data[0].type,
+                    "source": "https://example.3ds.com:443/3DSpace",
+                    "relativePath": "/resources/v1/modeler/dseng/dseng:EngItem/F718B05686760000926EEB5BE7400900"
+                  }
+                ]
+              }
+            let APIDetails = {method:"Post",body:requestBody};
+            
+            let response = dragAndDropComp.getCSRFToken(data,finalURL,APIDetails);
 
         }, getAllWhereUsedOfRevison: function(data) {
 
