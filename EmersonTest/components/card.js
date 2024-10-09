@@ -1,4 +1,4 @@
-define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData",], function (DataDragAndDrop,WAFData) {
+define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData",], function (DataDragAndDrop, WAFData) {
 
     var card = {
         showCard: function (data) {
@@ -13,9 +13,19 @@ define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop", "DS
             if (data) {
                 metadata = data;
             }
-            
 
-            var cardHTML = '<div class="container"><div class="row"><div class="col s12 m6"><div class="card horizontal"><div class="card-image" style="flex: 1;"><img src="https://thewhitechamaleon.github.io/RevisionFloat/EmersonTest/assets/images/PhysicalProductLarge.png" alt="Sample Image" style="width: 100%;"></div><div class="card-stacked" style="flex: 1;"><div class="card-content">';
+
+            var cardHTML = `
+                <div class="container">
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="card horizontal">
+                                <div class="card-image" style="flex: 1;">
+                                    <img src="https://thewhitechamaleon.github.io/RevisionFloat/EmersonTest/assets/images/PhysicalProductLarge.png" alt="Sample Image" style="width: 100%;">
+                                </div>
+                                <div class="card-stacked" style="flex: 1;">
+                                    <div class="card-content">
+            `;
 
             for (var key in metadata) {
                 if (metadata.hasOwnProperty(key)) {
