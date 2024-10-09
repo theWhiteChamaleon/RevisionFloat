@@ -18,17 +18,17 @@ define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop", "DS
             var cardHTML = `
                 <div class="card-container">
                     <div class="row card-boundary">
-                        <div class="col-sm-4">
+                        <div class="col-sm-2">
                                 <div class="card-image" style="flex: 1;">
                                     <img src="https://thewhitechamaleon.github.io/RevisionFloat/EmersonTest/assets/images/PhysicalProductLarge.png" alt="Sample Image" style="width: 100%;">
                                 </div></div>
-                                <div class="col-sm-8" style="flex: 1;">
+                                <div class="col-sm-10" style="flex: 1;">
                                     <div class="card-content">
             `;
 
             for (var key in metadata) {
                 if (metadata.hasOwnProperty(key)) {
-                    cardHTML += `<p><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${metadata[key]}</p>`;
+                    cardHTML += `<p title="${metadata[key]}"><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${metadata[key]}</p>`;
                 }
             }
 
