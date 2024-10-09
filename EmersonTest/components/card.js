@@ -1,4 +1,4 @@
-define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData",], function (DataDragAndDrop, WAFData) {
+define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData","css!EmersonTest/styles/revstyles.css"], function (DataDragAndDrop, WAFData) {
 
     var card = {
         showCard: function (data) {
@@ -16,14 +16,13 @@ define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop", "DS
 
 
             var cardHTML = `
-                <div class="container">
-                    <div class="row">
-                        <div class="col s12">
-                            <div class="card horizontal">
+                <div class="card-container">
+                    <div class="row card-boundary">
+                        <div class="col-sm-4">
                                 <div class="card-image" style="flex: 1;">
                                     <img src="https://thewhitechamaleon.github.io/RevisionFloat/EmersonTest/assets/images/PhysicalProductLarge.png" alt="Sample Image" style="width: 100%;">
-                                </div>
-                                <div class="card-stacked" style="flex: 1;">
+                                </div></div>
+                                <div class="col-sm-8" style="flex: 1;">
                                     <div class="card-content">
             `;
 
@@ -33,7 +32,7 @@ define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop", "DS
                 }
             }
 
-            cardHTML += '</div></div></div></div></div></div>';
+            cardHTML += '</div></div></div></div>';
 
 
             widget.body.innerHTML = cardHTML;
