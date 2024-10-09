@@ -143,13 +143,13 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                 method: "Post",
                 headers: dragAndDropComp.csrfHeaders,
                 data: {
-                    "data": [
+                    data: [
                       {
-                        "id": data.objectId,
-                        "identifier": data.objectId,
-                        "type": data.type,
-                        "source": "https://oi000186152-us1-space.3dexperience.3ds.com/enovia",
-                        "relativePath": "/resources/v1/modeler/dseng/dseng:EngItem/"+data.objectId
+                        id: data.objectId,
+                        identifier: data.objectId,
+                        type: data.type,
+                        source: "https://oi000186152-us1-space.3dexperience.3ds.com/enovia",
+                        relativePath: "/resources/v1/modeler/dseng/dseng:EngItem/"+data.objectId
                       }
                     ]
                   },
