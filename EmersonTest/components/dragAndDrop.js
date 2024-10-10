@@ -66,7 +66,9 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
             }
         },csrfHeaders:[
 
-        ], getCSRFToken: function (data) {
+        ],dataObject: {
+
+        }, getCSRFToken: function (data) {
             // URLs
             let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
             let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
@@ -130,6 +132,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                             console.log("filteredData", filteredData);
 
                             card.showCard(filteredData);
+                            dragAndDropComp.dataObject = dataResp3.member[0];
                             dragAndDropComp.getAllRevisions(dataResp3.member[0]);
                         }
                     });
@@ -139,26 +142,63 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
         }, getAllRevisions: function (data) {
 
             let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dslc/version/getGraph";
-            WAFData.authenticatedRequest(finalURL, {
-                method: "Post",
-                headers: dragAndDropComp.csrfHeaders,
+            let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
+
+
+            WAFData.proxifiedRequest(csrfURL, {
+                method: "Get",
+                headers: {
+
+                },
                 data: {
-                    data: [
-                      {
-                        id: data.objectId,
-                        identifier: data.objectId,
-                        type: data.type,
-                        source: "https://oi000186152-us1-space.3dexperience.3ds.com/enovia",
-                        relativePath: "/resources/v1/modeler/dseng/dseng:EngItem/"+data.objectId
-                      }
-                    ]
-                  },
+
+                },
                 timeout: 150000,
                 type: "json",
-                onComplete: function (dataResp3, headerResp2) {
-                    console.log("dataResp2", dataResp2);
+                onComplete: function (dataResp2, headerResp2) {
+                    const csrfToken = dataResp2.csrf.name;
+                    const csrfValue = dataResp2.csrf.value;
+                    const securityContextHeader = 'SecurityContext';
+                    const securityContextValue = "ctx%3A%3AVPLMProjectLeader.BU-0000001.Rosemount%20Flow";
+
+                    const myHeaders = new Object();
+                    myHeaders[csrfToken] = csrfValue;
+                    myHeaders[securityContextHeader] = securityContextValue;
+                    myHeaders["Content-Type"] = "application/json";
+                    dragAndDropComp.csrfHeaders = myHeaders;
+
+                    finalURL += data[0].objectId;
+                    finalURL += "?$mask=dsmveng:EngItemMask.Details";
+                    console.log("finalURL", finalURL);
+
+                    bodydata: {
+                        data: [
+                          {
+                            id: dragAndDropComp.dataObject.objectId,
+                            identifier: dragAndDropComp.dataObject.objectId,
+                            type: dragAndDropComp.dataObject.type,
+                            source: "https://oi000186152-us1-space.3dexperience.3ds.com/enovia",
+                            relativePath: "/resources/v1/modeler/dseng/dseng:EngItem/"+dragAndDropComp.dataObject.objectId
+                          }
+                        ]
+                      };
+
+                    WAFData.authenticatedRequest(finalURL, {
+                        method: "Post",
+                        headers: myHeaders,
+                        data: JSON.stringify(bodydata),
+                        timeout: 150000,
+                        type: "json",
+                        onComplete: function (dataResp3, headerResp3) {
+                            console.log("dataResp3", dataResp3);
+
+
+                        }
+                    });
+
                 }
             });
+
         }, getAllWhereUsedOfRevison: function(data) {
 
         }, prepareDataForTable: function (data) {
