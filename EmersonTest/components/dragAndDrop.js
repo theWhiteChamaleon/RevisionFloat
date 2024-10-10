@@ -183,40 +183,18 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                         ]
                       };
 
-
-                      var opts = {
-                        url: finalURL,
-                        method: "POST",
-                        type: "json",
-                        data: {
-                            data: [
-                                {
-                                  id: dragAndDropComp.dataObject.id,
-                                  identifier: dragAndDropComp.dataObject.id,
-                                  type: dragAndDropComp.dataObject.type,
-                                  source: "https://oi000186152-us1-space.3dexperience.3ds.com/enovia",
-                                  relativePath: "/resources/v1/modeler/dseng/dseng:EngItem/"+dragAndDropComp.dataObject.id
-                                }
-                              ]
-                        },
+                    WAFData.proxifiedRequest(finalURL, {
+                        method: "Post",
                         headers: myHeaders,
-                        onComplete: function (dataResp) { 
-                            console.log(dataResp);
-                        },
-                        onFailure: function (error) {}};
-                      commonServices.call3DSpace(opts); 
-                    // WAFData.authenticatedRequest(finalURL, {
-                    //     method: "Post",
-                    //     headers: myHeaders,
-                    //     data: JSON.stringify(bodydata),
-                    //     timeout: 150000,
-                    //     type: "json",
-                    //     onComplete: function (dataResp3, headerResp3) {
-                    //         console.log("dataResp3", dataResp3);
+                        data: JSON.stringify(bodydata),
+                        timeout: 150000,
+                        type: "json",
+                        onComplete: function (dataResp3, headerResp3) {
+                            console.log("dataResp3", dataResp3);
 
 
-                    //     }
-                    // });
+                        }
+                    });
 
                 }
             });
