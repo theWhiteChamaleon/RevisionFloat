@@ -170,7 +170,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                    
                     console.log("finalURL", finalURL);
 
-                    bodydata: {
+                    var bodydata= {
                         data: [
                           {
                             id: dragAndDropComp.dataObject.id,
