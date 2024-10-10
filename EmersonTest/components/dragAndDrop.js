@@ -134,7 +134,8 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
 
                             card.showCard(filteredData);
                             dragAndDropComp.dataObject = dataResp3.member[0];
-                            dragAndDropComp.getAllRevisions(dataResp3.member[0]);
+                            // dragAndDropComp.getAllRevisions(dataResp3.member[0]);
+                            dragAndDropComp.getAllWhereUsedOfRevison(dataResp3.member[0]);
                         }
                     });
 
@@ -200,6 +201,62 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
             });
 
         }, getAllWhereUsedOfRevison: function(data) {
+
+            let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/locate";
+            let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
+
+
+            WAFData.proxifiedRequest(csrfURL, {
+                method: "Get",
+                headers: {
+
+                },
+                data: {
+
+                },
+                timeout: 150000,
+                type: "json",
+                onComplete: function (dataResp2, headerResp2) {
+                    const csrfToken = dataResp2.csrf.name;
+                    const csrfValue = dataResp2.csrf.value;
+                    const securityContextHeader = 'SecurityContext';
+                    const securityContextValue = "ctx%3A%3AVPLMProjectLeader.BU-0000001.Rosemount%20Flow";
+
+                    const myHeaders = new Object();
+                    myHeaders[csrfToken] = csrfValue;
+                    myHeaders[securityContextHeader] = securityContextValue;
+                    myHeaders["Content-Type"] = "application/json";
+                    dragAndDropComp.csrfHeaders = myHeaders;
+
+                   
+                    console.log("finalURL", finalURL);
+
+                    var bodydata= {
+                        "referencedObjects": [
+                          {
+                            "source": "https://OI000186152-us1-space.3dexperience.3ds.com/enovia",
+                            "type": "VPMReference",
+                            "identifier": "9D54C57FDB68160065F7F1400000A639",
+                            "relativePath": "/resources/v1/modeler/dseng/dseng:EngItem/9D54C57FDB68160065F7F1400000A639"
+                          }
+                        ]
+                      };
+
+                    WAFData.proxifiedRequest(finalURL, {
+                        method: "Post",
+                        headers: myHeaders,
+                        data: JSON.stringify(bodydata),
+                        timeout: 150000,
+                        type: "json",
+                        onComplete: function (dataResp3, headerResp3) {
+                            console.log("dataResp3", dataResp3);
+
+
+                        }
+                    });
+
+                }
+            });
 
         }, prepareDataForTable: function (data) {
             
