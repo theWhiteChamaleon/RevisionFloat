@@ -1,13 +1,13 @@
 define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData", "EmersonTest/components/card",
-    "EmersonTest/components/table","EmersonTest/components/commonServices"], 
-    function (DataDragAndDrop, WAFData, card,table,commonServices) {
+    "EmersonTest/components/table", "EmersonTest/components/commonServices"],
+    function (DataDragAndDrop, WAFData, card, table, commonServices) {
 
-    var dragAndDropComp = {
-        showDroppable: function () {
-            // alert("In ON load 4");
+        var dragAndDropComp = {
+            showDroppable: function () {
+                // alert("In ON load 4");
 
-            var temp =
-                `<div class="droppableContainer" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; color: blue;">
+                var temp =
+                    `<div class="droppableContainer" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; color: blue;">
             <img 
                 src="https://thewhitechamaleon.github.io/RevisionFloat/EmersonTest/assets/images/drag-and-drop.png" 
                 alt="Drag and Drop" 
@@ -30,240 +30,318 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
         </div>`;
 
 
-            widget.body.innerHTML = temp;
-            var droppableContainer = widget.body.querySelector('.droppableContainer');
-            debugger;
-            DataDragAndDrop.droppable(droppableContainer, {
-                drop: function (data) {
-                    console.log("data", data)
-                    droppableContainer.classList.remove("drag-over");
+                widget.body.innerHTML = temp;
+                var droppableContainer = widget.body.querySelector('.droppableContainer');
+                debugger;
+                DataDragAndDrop.droppable(droppableContainer, {
+                    drop: function (data) {
+                        console.log("data", data)
+                        droppableContainer.classList.remove("drag-over");
 
-                    var dropedObject = JSON.parse(data);
-                    dragAndDropComp.getDroppedObjectInfo(dropedObject.data.items);
-
-
-                    //   var objId = dropedObject.data["items"][0].objectId;
-                    //   that.objectId = objId;
-                    //   PlatformAPI.publish("DropRCAID", that.objectId) //ZSIAHBH : PLMRM-9640 Refresh - Sync
-                    //   that.dropCADisplayName = dropedObject.data["items"][0].displayName;
-                    //   that.isBtnCAReportDisabled = false;
-                    //   that.callAllMethods();
-                },
-                enter: function () {
-                    console.log("Enter");
-                    droppableContainer.classList.add("drag-over");
-                },
-                leave: function () {
-                    console.log("leave");
-                    droppableContainer.classList.remove("drag-over");
-                },
-            });
-        }, getDroppedObjectInfo: function (data) {
-            if (data.length > 1) {
-                alert("Please drop only one object");
-                return;
-            } else {
-                dragAndDropComp.getCSRFToken(data);
-            }
-        },csrfHeaders:[
-
-        ],dataObject: {
-
-        }, getCSRFToken: function (data) {
-            // URLs
-            let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
-            let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
-
-            WAFData.proxifiedRequest(csrfURL, {
-                method: "Get",
-                headers: {
-
-                },
-                data: {
-
-                },
-                timeout: 150000,
-                type: "json",
-                onComplete: function (dataResp2, headerResp2) {
-                    const csrfToken = dataResp2.csrf.name;
-                    const csrfValue = dataResp2.csrf.value;
-                    const securityContextHeader = 'SecurityContext';
-                    const securityContextValue = "ctx%3A%3AVPLMProjectLeader.BU-0000001.Rosemount%20Flow";;
-
-                    const myHeaders = new Object();
-                    myHeaders[csrfToken] = csrfValue;
-                    myHeaders[securityContextHeader] = securityContextValue;
-                    dragAndDropComp.csrfHeaders = myHeaders;
-
-                    finalURL += data[0].objectId;
-                    finalURL += "?$mask=dsmveng:EngItemMask.Details";
-                    console.log("finalURL", finalURL);
-                    WAFData.authenticatedRequest(finalURL, {
-                        method: "Get",
-                        headers: myHeaders,
-                        data: {
-                        },
-                        timeout: 150000,
-                        type: "json",
-                        onComplete: function (dataResp3, headerResp3) {
-                            console.log("dataResp3", dataResp3);
+                        var dropedObject = JSON.parse(data);
+                        dragAndDropComp.getDroppedObjectInfo(dropedObject.data.items);
 
 
-                            const valuesToDisplay = ["title","description","type","revision","state","owner","organization","collabspace","partNumber"];
-                            droppedData = dataResp3.member[0];
-                            var filteredData = {};
-                            function extractValues(obj, keys) {
-                                let result = {};
-                                for (let key in obj) {
-                                    if (obj.hasOwnProperty(key)) {
-                                        if (keys.includes(key)) {
-                                            result[key] = obj[key];
-                                        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-                                            let nestedResult = extractValues(obj[key], keys);
-                                            if (Object.keys(nestedResult).length > 0) {
-                                                result = { ...result, ...nestedResult };
+                        //   var objId = dropedObject.data["items"][0].objectId;
+                        //   that.objectId = objId;
+                        //   PlatformAPI.publish("DropRCAID", that.objectId) //ZSIAHBH : PLMRM-9640 Refresh - Sync
+                        //   that.dropCADisplayName = dropedObject.data["items"][0].displayName;
+                        //   that.isBtnCAReportDisabled = false;
+                        //   that.callAllMethods();
+                    },
+                    enter: function () {
+                        console.log("Enter");
+                        droppableContainer.classList.add("drag-over");
+                    },
+                    leave: function () {
+                        console.log("leave");
+                        droppableContainer.classList.remove("drag-over");
+                    },
+                });
+            }, getDroppedObjectInfo: function (data) {
+                if (data.length > 1) {
+                    alert("Please drop only one object");
+                    return;
+                } else {
+                    dragAndDropComp.getCSRFToken(data);
+                }
+            }, csrfHeaders: [
+
+            ], dataObject: {
+
+            }, getCSRFToken: function (data) {
+                // URLs
+                let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
+                let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
+
+                WAFData.proxifiedRequest(csrfURL, {
+                    method: "Get",
+                    headers: {
+
+                    },
+                    data: {
+
+                    },
+                    timeout: 150000,
+                    type: "json",
+                    onComplete: function (dataResp2, headerResp2) {
+                        const csrfToken = dataResp2.csrf.name;
+                        const csrfValue = dataResp2.csrf.value;
+                        const securityContextHeader = 'SecurityContext';
+                        const securityContextValue = "ctx%3A%3AVPLMProjectLeader.BU-0000001.Rosemount%20Flow";;
+
+                        const myHeaders = new Object();
+                        myHeaders[csrfToken] = csrfValue;
+                        myHeaders[securityContextHeader] = securityContextValue;
+                        dragAndDropComp.csrfHeaders = myHeaders;
+
+                        finalURL += data[0].objectId;
+                        finalURL += "?$mask=dsmveng:EngItemMask.Details";
+                        console.log("finalURL", finalURL);
+                        WAFData.authenticatedRequest(finalURL, {
+                            method: "Get",
+                            headers: myHeaders,
+                            data: {
+                            },
+                            timeout: 150000,
+                            type: "json",
+                            onComplete: function (dataResp3, headerResp3) {
+                                console.log("dataResp3", dataResp3);
+
+
+                                const valuesToDisplay = ["title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
+                                droppedData = dataResp3.member[0];
+                                var filteredData = {};
+                                function extractValues(obj, keys) {
+                                    let result = {};
+                                    for (let key in obj) {
+                                        if (obj.hasOwnProperty(key)) {
+                                            if (keys.includes(key)) {
+                                                result[key] = obj[key];
+                                            } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                                                let nestedResult = extractValues(obj[key], keys);
+                                                if (Object.keys(nestedResult).length > 0) {
+                                                    result = { ...result, ...nestedResult };
+                                                }
                                             }
                                         }
                                     }
+                                    return result;
                                 }
-                                return result;
+
+                                filteredData = extractValues(droppedData, valuesToDisplay);
+                                console.log("filteredData", filteredData);
+
+                                card.showCard(filteredData);
+                                dragAndDropComp.dataObject = dataResp3.member[0];
+                                dragAndDropComp.getAllRevisions(dataResp3.member[0]);
+                                // dragAndDropComp.getAllWhereUsedOfRevison(dataResp3.member[0]);
                             }
+                        });
 
-                            filteredData = extractValues(droppedData, valuesToDisplay);
-                            console.log("filteredData", filteredData);
+                    }
+                });
+            }, getAllRevisions: function (data) {
 
-                            card.showCard(filteredData);
-                            dragAndDropComp.dataObject = dataResp3.member[0];
-                            // dragAndDropComp.getAllRevisions(dataResp3.member[0]);
-                            dragAndDropComp.getAllWhereUsedOfRevison(dataResp3.member[0]);
-                        }
+                let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dslc/version/getGraph";
+                let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
+
+
+                WAFData.authenticatedRequest(csrfURL, {
+                    method: "Get",
+                    headers: {
+
+                    },
+                    data: {
+
+                    },
+                    timeout: 150000,
+                    type: "json",
+                    onComplete: function (dataResp2, headerResp2) {
+                        const csrfToken = dataResp2.csrf.name;
+                        const csrfValue = dataResp2.csrf.value;
+                        const securityContextHeader = 'SecurityContext';
+                        const securityContextValue = "ctx%3A%3AVPLMProjectLeader.BU-0000001.Rosemount%20Flow";
+
+                        const myHeaders = new Object();
+                        myHeaders[csrfToken] = csrfValue;
+                        myHeaders[securityContextHeader] = securityContextValue;
+                        myHeaders["Content-Type"] = "application/json";
+                        dragAndDropComp.csrfHeaders = myHeaders;
+
+
+                        console.log("finalURL", finalURL);
+
+                        var bodydata = {
+                            data: [
+                                {
+                                    id: dragAndDropComp.dataObject.id,
+                                    identifier: dragAndDropComp.dataObject.id,
+                                    type: dragAndDropComp.dataObject.type,
+                                    source: "https://oi000186152-us1-space.3dexperience.3ds.com/enovia",
+                                    relativePath: "/resources/v1/modeler/dseng/dseng:EngItem/" + dragAndDropComp.dataObject.id
+                                }
+                            ]
+                        };
+
+                        WAFData.authenticatedRequest(finalURL, {
+                            method: "Post",
+                            headers: myHeaders,
+                            data: JSON.stringify(bodydata),
+                            timeout: 150000,
+                            type: "json",
+                            onComplete: function (dataResp3, headerResp3) {
+                                console.log("dataResp3", dataResp3);
+                                let revisionArray = dataResp3.results[0].versions;
+
+                                revisionArray.foreach(rev => {
+                                    dragAndDropComp.getAllWhereUsedOfRevison(rev);
+                                })
+
+
+
+                            }
+                        });
+
+                    }
+                });
+
+            }, getAllWhereUsedOfRevison: function (data) {
+
+                let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/locate";
+                let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
+
+
+                dragAndDropComp["Content-Type"] = "application/json";
+
+                var bodydata = {
+                    "referencedObjects": [
+                        data
+                    ]
+                };
+
+                WAFData.authenticatedRequest(finalURL, {
+                    method: "Post",
+                    headers: myHeaders,
+                    data: JSON.stringify(bodydata),
+                    timeout: 150000,
+                    type: "json",
+                    onComplete: function (dataResp3, headerResp3) {
+                        console.log("dataResp3", dataResp3);
+                        let childID = dataResp3.member[0].id;
+                        let engInstance = dataResp3.member[0]["dseng:EngInstance"].member.foreach((parentItem) => {
+                            dragAndDropComp.tableData.push(
+                                { parentID: parentItem.parentObject.identifier, "childID": childID }
+                        )
+
+                        let partInfoURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
+                        // Get Parent infomration to be displayed in the table.
+                        partInfoURL +=  parentItem.parentObject.identifier;
+                        partInfoURL += "?$mask=dsmveng:EngItemMask.Details";
+                        console.log("finalURL", partInfoURL);
+                        WAFData.authenticatedRequest(partInfoURL, {
+                            method: "Get",
+                            headers: myHeaders,
+                            data: {
+                            },
+                            timeout: 150000,
+                            type: "json",
+                            onComplete: function (dataRespParent, headerRespParent) {
+
+                                const valuesToDisplay = ["id","title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
+                                droppedData = dataRespParent.member[0];
+                                var filteredData = {};
+                                function extractValues(obj, keys) {
+                                    let result = {};
+                                    for (let key in obj) {
+                                        if (obj.hasOwnProperty(key)) {
+                                            if (keys.includes(key)) {
+                                                result[key] = obj[key];
+                                            } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                                                let nestedResult = extractValues(obj[key], keys);
+                                                if (Object.keys(nestedResult).length > 0) {
+                                                    result = { ...result, ...nestedResult };
+                                                }
+                                            }
+                                        }
+                                    }
+                                    return result;
+                                }
+
+                                filteredData = extractValues(droppedData, valuesToDisplay);
+                                console.log("filteredData", filteredData);
+
+                                // Add filteredData to the object in dragAndDropComp.tableData where parentID matches the id in filteredData
+                                dragAndDropComp.tableData.forEach(item => {
+                                    if (item.parentID === filteredData.id) {
+                                        Object.assign(item, filteredData);
+                                    }
+                                });
+                            }});
                     });
 
-                }
-            });
-        }, getAllRevisions: function (data) {
-
-            let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dslc/version/getGraph";
-            let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
 
 
-            WAFData.proxifiedRequest(csrfURL, {
-                method: "Get",
-                headers: {
+            }
+        });
 
-                },
-                data: {
+            // WAFData.authenticatedRequest(csrfURL, {
+            //     method: "Get",
+            //     headers: {
 
-                },
-                timeout: 150000,
-                type: "json",
-                onComplete: function (dataResp2, headerResp2) {
-                    const csrfToken = dataResp2.csrf.name;
-                    const csrfValue = dataResp2.csrf.value;
-                    const securityContextHeader = 'SecurityContext';
-                    const securityContextValue = "ctx%3A%3AVPLMProjectLeader.BU-0000001.Rosemount%20Flow";
+            //     },
+            //     data: {
 
-                    const myHeaders = new Object();
-                    myHeaders[csrfToken] = csrfValue;
-                    myHeaders[securityContextHeader] = securityContextValue;
-                    myHeaders["Content-Type"] = "application/json";
-                    dragAndDropComp.csrfHeaders = myHeaders;
+            //     },
+            //     timeout: 150000,
+            //     type: "json",
+            //     onComplete: function (dataResp2, headerResp2) {
+            //         const csrfToken = dataResp2.csrf.name;
+            //         const csrfValue = dataResp2.csrf.value;
+            //         const securityContextHeader = 'SecurityContext';
+            //         const securityContextValue = "ctx%3A%3AVPLMProjectLeader.BU-0000001.Rosemount%20Flow";
 
-                   
-                    console.log("finalURL", finalURL);
+            //         const myHeaders = new Object();
+            //         myHeaders[csrfToken] = csrfValue;
+            //         myHeaders[securityContextHeader] = securityContextValue;
+            //         myHeaders["Content-Type"] = "application/json";
+            //         dragAndDropComp.csrfHeaders = myHeaders;
 
-                    var bodydata= {
-                        data: [
-                          {
-                            id: dragAndDropComp.dataObject.id,
-                            identifier: dragAndDropComp.dataObject.id,
-                            type: dragAndDropComp.dataObject.type,
-                            source: "https://oi000186152-us1-space.3dexperience.3ds.com/enovia",
-                            relativePath: "/resources/v1/modeler/dseng/dseng:EngItem/"+dragAndDropComp.dataObject.id
-                          }
-                        ]
-                      };
+            //         var bodydata= {
+            //             "referencedObjects": [
+            //               {
+            //                 "source": "https://OI000186152-us1-space.3dexperience.3ds.com/enovia",
+            //                 "type": "VPMReference",
+            //                 "identifier": "9D54C57FDB68160065F7F1400000A639",
+            //                 "relativePath": "/resources/v1/modeler/dseng/dseng:EngItem/9D54C57FDB68160065F7F1400000A639"
+            //               }
+            //             ]
+            //           };
 
-                    WAFData.proxifiedRequest(finalURL, {
-                        method: "Post",
-                        headers: myHeaders,
-                        data: JSON.stringify(bodydata),
-                        timeout: 150000,
-                        type: "json",
-                        onComplete: function (dataResp3, headerResp3) {
-                            console.log("dataResp3", dataResp3);
-
-
-                        }
-                    });
-
-                }
-            });
-
-        }, getAllWhereUsedOfRevison: function(data) {
-
-            let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/locate";
-            let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
+            //         WAFData.authenticatedRequest(finalURL, {
+            //             method: "Post",
+            //             headers: myHeaders,
+            //             data: JSON.stringify(bodydata),
+            //             timeout: 150000,
+            //             type: "json",
+            //             onComplete: function (dataResp3, headerResp3) {
+            //                 console.log("dataResp3", dataResp3);
 
 
-            WAFData.proxifiedRequest(csrfURL, {
-                method: "Get",
-                headers: {
+            //             }
+            //         });
 
-                },
-                data: {
+            //     }
+            // });
 
-                },
-                timeout: 150000,
-                type: "json",
-                onComplete: function (dataResp2, headerResp2) {
-                    const csrfToken = dataResp2.csrf.name;
-                    const csrfValue = dataResp2.csrf.value;
-                    const securityContextHeader = 'SecurityContext';
-                    const securityContextValue = "ctx%3A%3AVPLMProjectLeader.BU-0000001.Rosemount%20Flow";
+        }, tableData: [
 
-                    const myHeaders = new Object();
-                    myHeaders[csrfToken] = csrfValue;
-                    myHeaders[securityContextHeader] = securityContextValue;
-                    myHeaders["Content-Type"] = "application/json";
-                    dragAndDropComp.csrfHeaders = myHeaders;
+], prepareDataForTable: function (data) {
 
-                   
-                    console.log("finalURL", finalURL);
-
-                    var bodydata= {
-                        "referencedObjects": [
-                          {
-                            "source": "https://OI000186152-us1-space.3dexperience.3ds.com/enovia",
-                            "type": "VPMReference",
-                            "identifier": "9D54C57FDB68160065F7F1400000A639",
-                            "relativePath": "/resources/v1/modeler/dseng/dseng:EngItem/9D54C57FDB68160065F7F1400000A639"
-                          }
-                        ]
-                      };
-
-                    WAFData.proxifiedRequest(finalURL, {
-                        method: "Post",
-                        headers: myHeaders,
-                        data: JSON.stringify(bodydata),
-                        timeout: 150000,
-                        type: "json",
-                        onComplete: function (dataResp3, headerResp3) {
-                            console.log("dataResp3", dataResp3);
-
-
-                        }
-                    });
-
-                }
-            });
-
-        }, prepareDataForTable: function (data) {
-            
-        }
+}
     }
-    widget.dragAndDropComp = dragAndDropComp;
-    return dragAndDropComp;
+widget.dragAndDropComp = dragAndDropComp;
+return dragAndDropComp;
 
 
 
