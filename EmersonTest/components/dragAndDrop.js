@@ -167,18 +167,17 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                     myHeaders["Content-Type"] = "application/json";
                     dragAndDropComp.csrfHeaders = myHeaders;
 
-                    finalURL += data[0].objectId;
-                    finalURL += "?$mask=dsmveng:EngItemMask.Details";
+                   
                     console.log("finalURL", finalURL);
 
                     bodydata: {
                         data: [
                           {
-                            id: dragAndDropComp.dataObject.objectId,
-                            identifier: dragAndDropComp.dataObject.objectId,
+                            id: dragAndDropComp.dataObject.id,
+                            identifier: dragAndDropComp.dataObject.id,
                             type: dragAndDropComp.dataObject.type,
                             source: "https://oi000186152-us1-space.3dexperience.3ds.com/enovia",
-                            relativePath: "/resources/v1/modeler/dseng/dseng:EngItem/"+dragAndDropComp.dataObject.objectId
+                            relativePath: "/resources/v1/modeler/dseng/dseng:EngItem/"+dragAndDropComp.dataObject.id
                           }
                         ]
                       };
