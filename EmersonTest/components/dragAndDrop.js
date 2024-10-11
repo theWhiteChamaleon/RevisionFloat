@@ -194,9 +194,16 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                                 console.log("dataResp3", dataResp3);
                                 let revisionArray = dataResp3.results[0].versions;
 
-                                revisionArray.forEach(rev => {
-                                    dragAndDropComp.getAllWhereUsedOfRevison(rev);
-                                })
+                                Promise.all(revisionArray.map(rev => dragAndDropComp.getAllWhereUsedOfRevison(rev)))
+                                    .then(() => {
+                                        // Action to be performed once all getAllWhereUsedOfRevison promises are resolved
+                                        console.log("All revisions processed");
+                                        // You can add any additional actions here
+                                        console.log("dragAndDropComp.tableData", dragAndDropComp.tableData)
+                                    })
+                                    .catch(error => {
+                                        console.error("Error processing revisions:", error);
+                                    });
 
 
 
@@ -206,135 +213,93 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                     }
                 });
 
-            }, getAllWhereUsedOfRevison: function (data) {
+            }, getAllWhereUsedOfRevison: async function (data) {
 
-                let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/locate";
-                let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
+                return new Promise((resolve) => {
+                    let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/locate";
+                    let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
 
 
-                dragAndDropComp["Content-Type"] = "application/json";
+                    dragAndDropComp["Content-Type"] = "application/json";
 
-                var bodydata = {
-                    "referencedObjects": [
-                        data
-                    ]
-                };
+                    var bodydata = {
+                        "referencedObjects": [
+                            data
+                        ]
+                    };
 
-                WAFData.authenticatedRequest(finalURL, {
-                    method: "Post",
-                    headers: dragAndDropComp.csrfHeaders,
-                    data: JSON.stringify(bodydata),
-                    timeout: 150000,
-                    type: "json",
-                    onComplete: function (dataResp3, headerResp3) {
-                        console.log("dataResp3", dataResp3);
-                        let childID = dataResp3.member[0].id;
-                        let engInstance = dataResp3.member[0]["dseng:EngInstance"].member.forEach((parentItem) => {
-                            dragAndDropComp.tableData.push(
-                                { parentID: parentItem.parentObject.identifier, "childID": childID }
-                            )
+                    WAFData.authenticatedRequest(finalURL, {
+                        method: "Post",
+                        headers: dragAndDropComp.csrfHeaders,
+                        data: JSON.stringify(bodydata),
+                        timeout: 150000,
+                        type: "json",
+                        onComplete: function (dataResp3, headerResp3) {
+                            console.log("dataResp3", dataResp3);
+                            let childID = dataResp3.member[0].id;
+                            let engInstance = dataResp3.member[0]["dseng:EngInstance"].member.forEach((parentItem) => {
+                                dragAndDropComp.tableData.push(
+                                    { parentID: parentItem.parentObject.identifier, "childID": childID }
+                                )
 
-                            let partInfoURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
-                            // Get Parent infomration to be displayed in the table.
-                            partInfoURL += parentItem.parentObject.identifier;
-                            partInfoURL += "?$mask=dsmveng:EngItemMask.Details";
-                            console.log("finalURL", partInfoURL);
-                            WAFData.authenticatedRequest(partInfoURL, {
-                                method: "Get",
-                                headers: dragAndDropComp.csrfHeaders,
-                                data: {
-                                },
-                                timeout: 150000,
-                                type: "json",
-                                onComplete: function (dataRespParent, headerRespParent) {
+                                new Promise((resolve) => {
+                                    let partInfoURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
+                                // Get Parent infomration to be displayed in the table.
+                                partInfoURL += parentItem.parentObject.identifier;
+                                partInfoURL += "?$mask=dsmveng:EngItemMask.Details";
+                                console.log("finalURL", partInfoURL);
+                                WAFData.authenticatedRequest(partInfoURL, {
+                                    method: "Get",
+                                    headers: dragAndDropComp.csrfHeaders,
+                                    data: {
+                                    },
+                                    timeout: 150000,
+                                    type: "json",
+                                    onComplete: function (dataRespParent, headerRespParent) {
 
-                                    const valuesToDisplay = ["id", "title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
-                                    droppedData = dataRespParent.member[0];
-                                    var filteredData = {};
-                                    function extractValues(obj, keys) {
-                                        let result = {};
-                                        for (let key in obj) {
-                                            if (obj.hasOwnProperty(key)) {
-                                                if (keys.includes(key)) {
-                                                    result[key] = obj[key];
-                                                } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-                                                    let nestedResult = extractValues(obj[key], keys);
-                                                    if (Object.keys(nestedResult).length > 0) {
-                                                        result = { ...result, ...nestedResult };
+                                        const valuesToDisplay = ["id", "title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
+                                        droppedData = dataRespParent.member[0];
+                                        var filteredData = {};
+                                        function extractValues(obj, keys) {
+                                            let result = {};
+                                            for (let key in obj) {
+                                                if (obj.hasOwnProperty(key)) {
+                                                    if (keys.includes(key)) {
+                                                        result[key] = obj[key];
+                                                    } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                                                        let nestedResult = extractValues(obj[key], keys);
+                                                        if (Object.keys(nestedResult).length > 0) {
+                                                            result = { ...result, ...nestedResult };
+                                                        }
                                                     }
                                                 }
                                             }
+                                            return result;
                                         }
-                                        return result;
+
+                                        filteredData = extractValues(droppedData, valuesToDisplay);
+                                        console.log("filteredData", filteredData);
+
+                                        // Add filteredData to the object in dragAndDropComp.tableData where parentID matches the id in filteredData
+                                        dragAndDropComp.tableData.forEach(item => {
+                                            if (item.parentID === filteredData.id) {
+                                                Object.assign(item, filteredData);
+                                            }
+                                        });
+                                        resolve();
                                     }
-
-                                    filteredData = extractValues(droppedData, valuesToDisplay);
-                                    console.log("filteredData", filteredData);
-
-                                    // Add filteredData to the object in dragAndDropComp.tableData where parentID matches the id in filteredData
-                                    dragAndDropComp.tableData.forEach(item => {
-                                        if (item.parentID === filteredData.id) {
-                                            Object.assign(item, filteredData);
-                                        }
-                                    });
-                                }
+                                });
+                                });
+                                
+                                // console.log("dragAndDropComp.tableData", dragAndDropComp.tableData);
                             });
-                            console.log("dragAndDropComp.tableData", dragAndDropComp.tableData)
-                        });
 
 
-
-                    }
+                            resolve();
+                        }
+                    });
                 });
 
-                // WAFData.authenticatedRequest(csrfURL, {
-                //     method: "Get",
-                //     headers: {
-
-                //     },
-                //     data: {
-
-                //     },
-                //     timeout: 150000,
-                //     type: "json",
-                //     onComplete: function (dataResp2, headerResp2) {
-                //         const csrfToken = dataResp2.csrf.name;
-                //         const csrfValue = dataResp2.csrf.value;
-                //         const securityContextHeader = 'SecurityContext';
-                //         const securityContextValue = "ctx%3A%3AVPLMProjectLeader.BU-0000001.Rosemount%20Flow";
-
-                //         const myHeaders = new Object();
-                //         myHeaders[csrfToken] = csrfValue;
-                //         myHeaders[securityContextHeader] = securityContextValue;
-                //         myHeaders["Content-Type"] = "application/json";
-                //         dragAndDropComp.csrfHeaders = myHeaders;
-
-                //         var bodydata= {
-                //             "referencedObjects": [
-                //               {
-                //                 "source": "https://OI000186152-us1-space.3dexperience.3ds.com/enovia",
-                //                 "type": "VPMReference",
-                //                 "identifier": "9D54C57FDB68160065F7F1400000A639",
-                //                 "relativePath": "/resources/v1/modeler/dseng/dseng:EngItem/9D54C57FDB68160065F7F1400000A639"
-                //               }
-                //             ]
-                //           };
-
-                //         WAFData.authenticatedRequest(finalURL, {
-                //             method: "Post",
-                //             headers: myHeaders,
-                //             data: JSON.stringify(bodydata),
-                //             timeout: 150000,
-                //             type: "json",
-                //             onComplete: function (dataResp3, headerResp3) {
-                //                 console.log("dataResp3", dataResp3);
-
-
-                //             }
-                //         });
-
-                //     }
-                // });
 
             }, tableData: [
 
