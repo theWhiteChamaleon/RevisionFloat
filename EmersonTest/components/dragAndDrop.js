@@ -1,6 +1,6 @@
 define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData", "EmersonTest/components/card",
     "EmersonTest/components/table", "EmersonTest/components/commonServices"],
-    function (DataDragAndDrop, WAFData, card, table, commonServices) {
+    function (DataDragAndDrop, WAFData, card, whereUsedTable, commonServices) {
 
         var dragAndDropComp = {
             showDroppable: function () {
@@ -199,7 +199,8 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                                         // Action to be performed once all getAllWhereUsedOfRevison promises are resolved
                                         console.log("All revisions processed");
                                         // You can add any additional actions here
-                                        console.log("dragAndDropComp.tableData", dragAndDropComp.tableData)
+                                        console.log("dragAndDropComp.tableData", dragAndDropComp.tableData);
+                                        whereUsedTable.showTable(dragAndDropComp.tableData);
                                     })
                                     .catch(error => {
                                         console.error("Error processing revisions:", error);
