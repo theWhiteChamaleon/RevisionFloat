@@ -1,4 +1,10 @@
-define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData","css!EmersonTest/styles/revstyles.css"], function (DataDragAndDrop, WAFData) {
+// require.config({
+//     paths: {
+//         vue: "./ERI_UILibrairies/vue/vue",
+//     }
+// });
+
+define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData","css!EmersonTest/styles/revstyles.css"], function (DataDragAndDrop, WAFData,Tabulator) {
 
     var whereUsedTable = {
         showTable: function (data) {
