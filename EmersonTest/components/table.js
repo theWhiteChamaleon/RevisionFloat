@@ -18,6 +18,9 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
            
            
         // Create Tabulator table
+        var tableDiv = document.createElement('div');
+        tableDiv.id = "example-table";
+        widget.body.appendChild(tableDiv);
 
         var table = new Tabulator("#example-table", {
             data: data, // Assign data to table
@@ -26,23 +29,40 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
             movableColumns: true, // Allow column order to be changed
             selectable: true, // Enable row selection
             columns: [
-                {formatter: "rowSelection", titleFormatter: "rowSelection", hozAlign: "center", headerSort: false, cellClick: function(e, cell){
-                    cell.getRow().toggleSelect();
-                }},
-                // Additional columns can be defined here if needed
+            {formatter: "rowSelection", titleFormatter: "rowSelection", hozAlign: "center", headerSort: false, cellClick: function(e, cell){
+                cell.getRow().toggleSelect();
+            }, width: 50}, // Checkbox column with specified width
+            // Additional columns can be defined here if needed
             ],
             pagination: "local", // Enable local pagination
             paginationSize: 10, // Number of rows per page
             paginationSizeSelector: [10, 20, 30, 40], // Page size options
             initialSort: [ // Define initial sort order
-                {column: "name", dir: "asc"} // Sort by "name" column in ascending order
+            {column: "name", dir: "asc"} // Sort by "name" column in ascending order
             ],
             headerFilterPlaceholder: "Search...", // Placeholder for search input
             headerFilterLiveFilter: true, // Enable live filtering
         });
 
-        // Append table to DOM
-        document.getElementById("table-container").appendChild(table.element);
+        // Add select all and deselect all buttons
+        var selectAllButton = document.createElement('button');
+        selectAllButton.innerHTML = "Select All";
+        selectAllButton.onclick = function() {
+            table.selectRow();
+        };
+        widget.body.appendChild(selectAllButton);
+
+        var deselectAllButton = document.createElement('button');
+        deselectAllButton.innerHTML = "Deselect All";
+        deselectAllButton.onclick = function() {
+            table.deselectRow();
+        };
+        widget.body.appendChild(deselectAllButton);
+
+        // Make table horizontally scrollable
+        tableDiv.style.overflowX = "auto";
+
+       
 
         
            
