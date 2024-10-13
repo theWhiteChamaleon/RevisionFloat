@@ -15,59 +15,43 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
 
     var whereUsedTable = {
         showTable: function (data) {
-           
-           
-        // Create Tabulator table
-        var tableDiv = document.createElement('div');
-        tableDiv.id = "example-table";
-        widget.body.appendChild(tableDiv);
+            // Create Tabulator table
+            var tableDiv = document.createElement('div');
+            tableDiv.id = "example-table";
+            widget.body.appendChild(tableDiv);
 
-        var table = new Tabulator("#example-table", {
-            data: data, // Assign data to table
-            autoColumns: true, // Create columns from data keys
-            layout: "fitColumns", // Fit columns to width of table
-            movableColumns: true, // Allow column order to be changed
-            selectable: true, // Enable row selection
-            columns: [
-            {formatter: "rowSelection", titleFormatter: "rowSelection", hozAlign: "center", headerSort: false, cellClick: function(e, cell){
-                cell.getRow().toggleSelect();
-            }, width: 50}, // Checkbox column with specified width
-            // Additional columns can be defined here if needed
-            ],
-            pagination: "local", // Enable local pagination
-            paginationSize: 10, // Number of rows per page
-            paginationSizeSelector: [10, 20, 30, 40], // Page size options
-            initialSort: [ // Define initial sort order
-            {column: "name", dir: "asc"} // Sort by "name" column in ascending order
-            ],
-            headerFilterPlaceholder: "Search...", // Placeholder for search input
-            headerFilterLiveFilter: true, // Enable live filtering
-        });
-
-        // Add select all and deselect all buttons
-        var selectAllButton = document.createElement('button');
-        selectAllButton.innerHTML = "Select All";
-        selectAllButton.onclick = function() {
-            table.selectRow();
-        };
-        widget.body.appendChild(selectAllButton);
-
-        var deselectAllButton = document.createElement('button');
-        deselectAllButton.innerHTML = "Deselect All";
-        deselectAllButton.onclick = function() {
-            table.deselectRow();
-        };
-        widget.body.appendChild(deselectAllButton);
-
-        // Make table horizontally scrollable
-        tableDiv.style.overflowX = "auto";
-
-       
-
-        
-           
+            var table = new Tabulator("#example-table", {
+                data: tableData,
+                layout: "fitColumns",
+                resizableColumnGuide: true,
+                selectableRows:true,
+                dataTree:true,
+                columnDefaults:{
+                    tooltip:true,
+                },
+                movableColumns:true,
+                selectableRowsRangeMode:"click",
+                rowHeader: {formatter:"rowSelection", titleFormatter:"rowSelection", titleFormatterParams:{
+                    rowRange:"active" //only toggle the values of the active filtered rows
+                }, headerSort:false},
+                layout: "fitData",
+                columns: [
+                    {title: "Parent ID", field: "parentID"},
+                    {title: "Child ID", field: "childID"},
+                    {title: "Title", field: "title"},
+                    {title: "Description", field: "description",width: 300,resizable:true},
+                    {title: "ID", field: "id"},
+                    {title: "Type", field: "type"},
+                    {title: "Revision", field: "revision"},
+                    {title: "State", field: "state"},
+                    {title: "Owner", field: "owner"},
+                    {title: "Organization", field: "organization"},
+                    {title: "Collabspace", field: "collabspace"},
+                    {title: "Part Number", field: "partNumber"},
+                ],
+            });
         }
-    }
+    };
     widget.whereUsedTable = whereUsedTable;
     return whereUsedTable;
 
