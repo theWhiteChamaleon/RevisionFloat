@@ -1,7 +1,8 @@
 require.config({
     paths: {
         // Define the path for Tabulator (already included in HTML via CDN)
-        tabulator: 'https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min'
+        tabulator: 'https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min',
+        tabulatorCss: 'https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css'
     },
     shim: {
         // Make Tabulator available globally to RequireJS
@@ -10,8 +11,7 @@ require.config({
         }
     }
 });
-
-define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData","tabulator","css!EmersonTest/styles/revstyles.css"], function (DataDragAndDrop, WAFData,Tabulator) {
+define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData","tabulator","css!EmersonTest/styles/revstyles.css","tabulatorCss"], function (DataDragAndDrop, WAFData,Tabulator) {
 
     var whereUsedTable = {
         showTable: function (data) {
@@ -21,7 +21,7 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
             widget.body.appendChild(tableDiv);
 
             var table = new Tabulator("#example-table", {
-                data: tableData,
+                data: data,
                 layout: "fitColumns",
                 resizableColumnGuide: true,
                 selectableRows:true,
