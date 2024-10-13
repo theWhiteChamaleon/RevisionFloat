@@ -1,16 +1,24 @@
-// require.config({
-//     paths: {
-//         vue: "./ERI_UILibrairies/vue/vue",
-//     }
-// });
+require.config({
+    paths: {
+        // Define the path for Tabulator (already included in HTML via CDN)
+        tabulator: 'https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js'
+    },
+    shim: {
+        // Make Tabulator available globally to RequireJS
+        tabulator: {
+            exports: 'Tabulator'
+        }
+    }
+});
 
-define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData","css!EmersonTest/styles/revstyles.css"], function (DataDragAndDrop, WAFData,Tabulator) {
+define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData","tabulator","css!EmersonTest/styles/revstyles.css"], function (DataDragAndDrop, WAFData,Tabulator) {
 
     var whereUsedTable = {
         showTable: function (data) {
            
            
         // Create Tabulator table
+
         var table = new Tabulator("#example-table", {
             data: data, // Assign data to table
             autoColumns: true, // Create columns from data keys
