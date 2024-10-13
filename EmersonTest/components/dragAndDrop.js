@@ -1,5 +1,11 @@
+require.config({
+    paths: {
+        bootstrapCss: 'https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min' // Path for Tabulator CSS
+    }
+});
+
 define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData", "EmersonTest/components/card",
-    "EmersonTest/components/table", "EmersonTest/components/commonServices"],
+    "EmersonTest/components/table", "EmersonTest/components/commonServices",,"css!bootstrapCss"],
     function (DataDragAndDrop, WAFData, card, whereUsedTable, commonServices) {
 
         var dragAndDropComp = {
