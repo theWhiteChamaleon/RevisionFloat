@@ -1,12 +1,11 @@
 require.config({
     paths: {
         bootstrapCss: 'https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min', // Path for Tabulator CSS
-        materializeCss: "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min"
     }
 });
 
 define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData", "EmersonTest/components/card",
-    "EmersonTest/components/table", "EmersonTest/components/commonServices",,"css!bootstrapCss","css!materializeCss"],
+    "EmersonTest/components/table", "EmersonTest/components/commonServices","css!bootstrapCss"],
     function (DataDragAndDrop, WAFData, card, whereUsedTable, commonServices) {
 
         var dragAndDropComp = {
