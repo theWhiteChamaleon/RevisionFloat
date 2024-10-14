@@ -16,6 +16,18 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
 
     var whereUsedTable = {
         showTable: function (data) {
+
+            // Get latest revision detials 
+            var highestRev = data.reduce((max, item) => {
+                return item.connectedcCildRev > max ? item.connectedcCildRev : max;
+            }, data[0].connectedcCildRev);
+
+            // Add isLatestRevision property to each data object
+            data.forEach(item => {
+                item.isLatestRevision = item.connectedcCildRev === highestRev;
+                item.toBeRevision = item.connectedcCildRev === highestRev ? "-" : highestRev;
+            });
+
             // Create Tabulator table
             var tableDiv = document.createElement('div');
             tableDiv.id = "example-table";
@@ -37,18 +49,19 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
                 }, headerSort:false},
                 layout: "fitData",
                 columns: [
-                    {title: "Parent ID", field: "parentID"},
-                    {title: "Child ID", field: "childID"},
+                    {title: "EIN", field: "partNumber"},
                     {title: "Title", field: "title"},
                     {title: "Description", field: "description",width: 300,resizable:true},
-                    {title: "ID", field: "id"},
                     {title: "Type", field: "type"},
                     {title: "Revision", field: "revision"},
                     {title: "State", field: "state"},
                     {title: "Owner", field: "owner"},
-                    {title: "Organization", field: "organization"},
                     {title: "Collabspace", field: "collabspace"},
-                    {title: "Part Number", field: "partNumber"},
+                    {title: "Organization", field: "organization"},
+                    {title: "Connected Child Revision", field: "connectedcCildRev"},
+                    {title: "Latest child connected", field: "isLatestRevision", formatter:"tickCross"},
+                    
+                   
                 ],
             });
         }
