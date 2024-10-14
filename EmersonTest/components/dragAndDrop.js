@@ -307,7 +307,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                             //     });
                                 
                                 // console.log("dragAndDropComp.tableData", dragAndDropComp.tableData);
-                            });
+                            //});
 
 
                             
