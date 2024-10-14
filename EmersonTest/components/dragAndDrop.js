@@ -207,6 +207,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                                         // You can add any additional actions here
                                         console.log("dragAndDropComp.tableData", dragAndDropComp.tableData);
                                         whereUsedTable.showTable(dragAndDropComp.tableData);
+                                        dragAndDropComp.tableData = [];
                                     })
                                     .catch(error => {
                                         console.error("Error processing revisions:", error);
@@ -246,7 +247,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                             let childID = dataResp3.member[0].id;
                             let engInstance = dataResp3.member[0]["dseng:EngInstance"].member.forEach((parentItem) => {
                                 dragAndDropComp.tableData.push(
-                                    { parentID: parentItem.parentObject.identifier, "childID": childID }
+                                    { parentID: parentItem.parentObject.identifier, "childID": childID, "connectedcCildRev":data.revision }
                                 )
 
                                 new Promise((resolve) => {
@@ -296,13 +297,15 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                                         resolve();
                                     }
                                 });
+                                }).then(() => {
+                                    resolve();
                                 });
                                 
                                 // console.log("dragAndDropComp.tableData", dragAndDropComp.tableData);
                             });
 
 
-                            resolve();
+                            
                         }
                     });
                 });
