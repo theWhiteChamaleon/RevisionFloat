@@ -28,6 +28,7 @@
   overflow: hidden; /* Hide overflowing content */
   white-space: nowrap; /* Prevent text from wrapping */
   text-overflow: ellipsis; /* Show ellipsis for overflowing text */
+  font-size: medium;
 }
 
 .tabulator {
