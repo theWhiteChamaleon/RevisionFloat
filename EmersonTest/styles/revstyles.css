@@ -5,6 +5,7 @@
 .card-container {
     width: 95%;
     margin: auto;
+    margin-bottom: 15px;
 }
 
 .card-boundary{
