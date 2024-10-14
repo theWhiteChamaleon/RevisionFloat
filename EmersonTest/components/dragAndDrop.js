@@ -245,61 +245,66 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                         onComplete: function (dataResp3, headerResp3) {
                             console.log("dataResp3", dataResp3);
                             let childID = dataResp3.member[0].id;
-                            let engInstance = dataResp3.member[0]["dseng:EngInstance"].member.forEach((parentItem) => {
-                                dragAndDropComp.tableData.push(
-                                    { parentID: parentItem.parentObject.identifier, "childID": childID, "connectedcCildRev":data.revision }
-                                )
+                            let parentList = dataResp3.member[0]["dseng:EngInstance"].member;
+                            Promise.all(parentList.map(parent => dragAndDropComp.getParentInfo(parent,childID,data.revision))).then(() => {
+                                resolve();
+                            })
 
-                                new Promise((resolve) => {
-                                    let partInfoURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
-                                // Get Parent infomration to be displayed in the table.
-                                partInfoURL += parentItem.parentObject.identifier;
-                                partInfoURL += "?$mask=dsmveng:EngItemMask.Details";
-                                console.log("finalURL", partInfoURL);
-                                WAFData.authenticatedRequest(partInfoURL, {
-                                    method: "Get",
-                                    headers: dragAndDropComp.csrfHeaders,
-                                    data: {
-                                    },
-                                    timeout: 150000,
-                                    type: "json",
-                                    onComplete: function (dataRespParent, headerRespParent) {
+                            // let engInstance = dataResp3.member[0]["dseng:EngInstance"].member.forEach((parentItem) => {
+                            //     dragAndDropComp.tableData.push(
+                            //         { parentID: parentItem.parentObject.identifier, "childID": childID, "connectedcCildRev":data.revision }
+                            //     )
 
-                                        const valuesToDisplay = ["id", "title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
-                                        droppedData = dataRespParent.member[0];
-                                        var filteredData = {};
-                                        function extractValues(obj, keys) {
-                                            let result = {};
-                                            for (let key in obj) {
-                                                if (obj.hasOwnProperty(key)) {
-                                                    if (keys.includes(key)) {
-                                                        result[key] = obj[key];
-                                                    } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-                                                        let nestedResult = extractValues(obj[key], keys);
-                                                        if (Object.keys(nestedResult).length > 0) {
-                                                            result = { ...result, ...nestedResult };
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            return result;
-                                        }
+                            //     new Promise((resolve) => {
+                            //         let partInfoURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
+                            //     // Get Parent infomration to be displayed in the table.
+                            //     partInfoURL += parentItem.parentObject.identifier;
+                            //     partInfoURL += "?$mask=dsmveng:EngItemMask.Details";
+                            //     console.log("finalURL", partInfoURL);
+                            //     WAFData.authenticatedRequest(partInfoURL, {
+                            //         method: "Get",
+                            //         headers: dragAndDropComp.csrfHeaders,
+                            //         data: {
+                            //         },
+                            //         timeout: 150000,
+                            //         type: "json",
+                            //         onComplete: function (dataRespParent, headerRespParent) {
 
-                                        filteredData = extractValues(droppedData, valuesToDisplay);
-                                        console.log("filteredData", filteredData);
+                            //             const valuesToDisplay = ["id", "title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
+                            //             droppedData = dataRespParent.member[0];
+                            //             var filteredData = {};
+                            //             function extractValues(obj, keys) {
+                            //                 let result = {};
+                            //                 for (let key in obj) {
+                            //                     if (obj.hasOwnProperty(key)) {
+                            //                         if (keys.includes(key)) {
+                            //                             result[key] = obj[key];
+                            //                         } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                            //                             let nestedResult = extractValues(obj[key], keys);
+                            //                             if (Object.keys(nestedResult).length > 0) {
+                            //                                 result = { ...result, ...nestedResult };
+                            //                             }
+                            //                         }
+                            //                     }
+                            //                 }
+                            //                 return result;
+                            //             }
 
-                                        // Add filteredData to the object in dragAndDropComp.tableData where parentID matches the id in filteredData
-                                        dragAndDropComp.tableData.forEach(item => {
-                                            if (item.parentID === filteredData.id) {
-                                                Object.assign(item, filteredData);
-                                            }
-                                        });
-                                        resolve();
-                                    }
-                                });
-                                }).then(() => {
-                                    resolve();
-                                });
+                            //             filteredData = extractValues(droppedData, valuesToDisplay);
+                            //             console.log("filteredData", filteredData);
+
+                            //             // Add filteredData to the object in dragAndDropComp.tableData where parentID matches the id in filteredData
+                            //             dragAndDropComp.tableData.forEach(item => {
+                            //                 if (item.parentID === filteredData.id) {
+                            //                     Object.assign(item, filteredData);
+                            //                 }
+                            //             });
+                            //             resolve();
+                            //         }
+                            //     });
+                            //     }).then(() => {
+                            //         resolve();
+                            //     });
                                 
                                 // console.log("dragAndDropComp.tableData", dragAndDropComp.tableData);
                             });
@@ -315,6 +320,59 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
 
             ], prepareDataForTable: function (data) {
 
+            }, getParentInfo: function (parent,childID,connectedcCildRev) {
+                dragAndDropComp.tableData.push(
+                    { parentID: parent.parentObject.identifier, "childID": childID, "connectedcCildRev":connectedcCildRev }
+                )
+
+                return new Promise((resolve) => {
+                    let partInfoURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
+                // Get Parent infomration to be displayed in the table.
+                partInfoURL += parentItem.parentObject.identifier;
+                partInfoURL += "?$mask=dsmveng:EngItemMask.Details";
+                console.log("finalURL", partInfoURL);
+                WAFData.authenticatedRequest(partInfoURL, {
+                    method: "Get",
+                    headers: dragAndDropComp.csrfHeaders,
+                    data: {
+                    },
+                    timeout: 150000,
+                    type: "json",
+                    onComplete: function (dataRespParent, headerRespParent) {
+
+                        const valuesToDisplay = ["id", "title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
+                        droppedData = dataRespParent.member[0];
+                        var filteredData = {};
+                        function extractValues(obj, keys) {
+                            let result = {};
+                            for (let key in obj) {
+                                if (obj.hasOwnProperty(key)) {
+                                    if (keys.includes(key)) {
+                                        result[key] = obj[key];
+                                    } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                                        let nestedResult = extractValues(obj[key], keys);
+                                        if (Object.keys(nestedResult).length > 0) {
+                                            result = { ...result, ...nestedResult };
+                                        }
+                                    }
+                                }
+                            }
+                            return result;
+                        }
+
+                        filteredData = extractValues(droppedData, valuesToDisplay);
+                        console.log("filteredData", filteredData);
+
+                        // Add filteredData to the object in dragAndDropComp.tableData where parentID matches the id in filteredData
+                        dragAndDropComp.tableData.forEach(item => {
+                            if (item.parentID === filteredData.id) {
+                                Object.assign(item, filteredData);
+                            }
+                        });
+                        resolve();
+                    }
+                });
+                });
             }
         }
         widget.dragAndDropComp = dragAndDropComp;
