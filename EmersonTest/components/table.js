@@ -60,6 +60,7 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
                     {title: "Organization", field: "organization"},
                     {title: "Connected Child Revision", field: "connectedcCildRev"},
                     {title: "Latest child connected", field: "isLatestRevision", formatter:"tickCross"},
+                    {title: "To-Be child connected", field: "toBeRevision",},
                     
                    
                 ],
