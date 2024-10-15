@@ -34,9 +34,11 @@ define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop", "DS
             `;
 
             for (var key in metadata) {
-                if (key === "PartNumber") {
-                    key = "EIN";
-                } else if (key === "Organization") {
+                if (key === "partNumber") {
+                metadata["EIN"] = metadata[key];
+                delete metadata[key];
+                key="EIN";
+                } else if (key === "organization") {
                     delete metadata[key];
                     continue;
                 }
