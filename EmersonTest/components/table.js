@@ -44,6 +44,7 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
                 },
                 movableColumns:true,
                 selectableRowsRangeMode:"click",
+                placeholder:"Item is not used in any structure",
                 rowHeader: {formatter:"rowSelection", titleFormatter:"rowSelection", titleFormatterParams:{
                     rowRange:"active" //only toggle the values of the active filtered rows
                 }, headerSort:false},
