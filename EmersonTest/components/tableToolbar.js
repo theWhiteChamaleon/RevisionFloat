@@ -36,7 +36,7 @@ define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDr
             parentElement.insertBefore(tableToobarDiv, tableElement);
 
             // Add onclick event listeners to the buttons
-            var buttons = tableToolbarDiv.getElementsByTagName('button');
+            var buttons = document.getElementsByTagName('button');
             for (let i = 0; i < buttons.length; i++) {
                 buttons[i].onclick = data[i].onClick;
             }
