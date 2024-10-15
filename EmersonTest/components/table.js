@@ -38,6 +38,7 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
                 layout: "fitColumns",
                 resizableColumnGuide: true,
                 selectableRows:true,
+                maxHeight:"400px",
                 dataTree:true,
                 columnDefaults:{
                     tooltip:true,
