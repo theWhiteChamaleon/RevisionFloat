@@ -10,7 +10,14 @@ define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDr
     var tableToolbar = {
         showToolbar: function (data) {
             
-            data = [{buttonLabel:"Replace in All"},{buttonLabel:"Replace in selected"}, {buttonLabel:"Replace in my Collaborative Space"}]
+            data = [
+                { buttonLabel: "Replace in All", onClick: function() { alert('Action Initiated, You will be notified on completion'); } },
+                { buttonLabel: "Replace in Selected", onClick: function() { alert('Action Initiated, You will be notified on completion'); } },
+                { buttonLabel: "Replace in My Collaborative Space", onClick: function() { alert('Action Initiated, You will be notified on completion'); } }
+            ];
+
+
+
             var toobarHTML = '';
             data.forEach(button => {
                 toobarHTML += `<button class="btn btn-primary">${button.buttonLabel}</button>`;
@@ -27,6 +34,12 @@ define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDr
 
             // Insert the new element before the reference element
             parentElement.insertBefore(tableToobarDiv, tableElement);
+
+            // Add onclick event listeners to the buttons
+            var buttons = tableToolbarDiv.getElementsByTagName('button');
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].onclick = data[i].onClick;
+            }
             
         }
     }
