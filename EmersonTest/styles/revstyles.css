@@ -35,3 +35,12 @@
     width: 99%;
     margin: auto;
 }
+
+.tableToobarDiv{
+    width: 99%;
+    margin: auto;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: flex-start; /* Align items to the left */
+    gap: 10px; /* Add space between flex items */
+}
