@@ -12,13 +12,21 @@ define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDr
             
             data = [{buttonLabel:"Replace in All"},{buttonLabel:"Replace in selected"}, {buttonLabel:"Replace in my Collaborative Space"}]
             var toobarHTML = '';
-            data.buttons.forEach(button => {
+            data.forEach(button => {
                 toobarHTML += `<button class="btn btn-primary">${button.buttonLabel}</button>`;
             });
            
 
+            var tableToobarDiv = document.createElement('div');
+            tableToobarDiv.id = "tableToobarDiv";
+            tableToobarDiv.className = "tableToobarDiv";
+            tableToobarDiv.innerHTML = toobarHTML;
+            
+            var tableElement = document.getElementById("example-table");
+            var parentElement = tableElement.parentNode;
 
-            document.getElementById("example-table").prepend(toobarHTML);
+            // Insert the new element before the reference element
+            parentElement.insertBefore(tableToobarDiv, tableElement);
             
         }
     }
