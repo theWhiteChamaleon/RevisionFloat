@@ -12,7 +12,7 @@ require.config({
     }
 });
 
-define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData","tabulator","css!EmersonTest/styles/revstyles.css","css!tabulatorCss"], function (DataDragAndDrop, WAFData,Tabulator) {
+define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData","tabulator","EmersonTest/components/tableToolbar","css!EmersonTest/styles/revstyles.css","css!tabulatorCss"], function (DataDragAndDrop, WAFData,Tabulator,tableToolbar) {
 
     var whereUsedTable = {
         showTable: function (data) {
@@ -63,6 +63,10 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
                    
                 ],
             });
+
+            tableToolbar.showToolbar();
+
+
         }
     };
     widget.whereUsedTable = whereUsedTable;
