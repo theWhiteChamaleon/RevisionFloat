@@ -54,14 +54,12 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
                     {title: "Description", field: "description",width: 300,resizable:true},
                     {title: "Type", field: "type"},
                     {title: "Revision", field: "revision"},
-                    {title: "State", field: "state"},
-                    {title: "Owner", field: "owner"},
-                    {title: "Collabspace", field: "collabspace"},
-                    {title: "Organization", field: "organization"},
                     {title: "Connected Child Revision", field: "connectedcCildRev"},
                     {title: "Latest child connected", field: "isLatestRevision", formatter:"tickCross"},
                     {title: "To-Be child connected", field: "toBeRevision",},
-                    
+                    {title: "State", field: "state"},
+                    {title: "Owner", field: "owner"},
+                    {title: "Collabspace", field: "collabspace"}
                    
                 ],
             });
