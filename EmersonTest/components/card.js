@@ -5,7 +5,7 @@ require.config({
     }
 });
 
-define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData","css!EmersonTest/styles/revstyles.css","css!bootstrapCss"], function (DataDragAndDrop, WAFData) {
+define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData","EmersonTest/components/dragAndDrop","css!EmersonTest/styles/revstyles.css","css!bootstrapCss"], function (DataDragAndDrop, WAFData,dragAndDropComp) {
 
     var card = {
         showCard: function (data) {
@@ -49,35 +49,29 @@ define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop", "DS
 
             cardHTML += '</div></div></div></div>';
 
-
             widget.body.innerHTML = cardHTML;
-            // var droppableContainer = widget.body.querySelector('.droppableContainer');
-            // debugger;
-            // DataDragAndDrop.droppable(droppableContainer, {
-            //     drop: function (data) {
-            //         console.log("data", data)
-            //         droppableContainer.classList.remove("drag-over");
 
-            //         var dropedObject = JSON.parse(data);
-            //         dragAndDropComp.getDroppedObjectInfo(dropedObject.data.items);
+            var droppableContainer = widget.body.querySelector('.card-container');
+                debugger;
+                DataDragAndDrop.droppable(droppableContainer, {
+                    drop: function (data) {
+                        console.log("data", data)
+                        droppableContainer.classList.remove("drag-over");
 
+                        var dropedObject = JSON.parse(data);
+                        dragAndDropComp.getDroppedObjectInfo(dropedObject.data.items);
 
-            //         //   var objId = dropedObject.data["items"][0].objectId;
-            //         //   that.objectId = objId;
-            //         //   PlatformAPI.publish("DropRCAID", that.objectId) //ZSIAHBH : PLMRM-9640 Refresh - Sync
-            //         //   that.dropCADisplayName = dropedObject.data["items"][0].displayName;
-            //         //   that.isBtnCAReportDisabled = false;
-            //         //   that.callAllMethods();
-            //     },
-            //     enter: function () {
-            //         console.log("Enter");
-            //         droppableContainer.classList.add("drag-over");
-            //     },
-            //     leave: function () {
-            //         console.log("leave");
-            //         droppableContainer.classList.remove("drag-over");
-            //     },
-            // });
+                    },
+                    enter: function () {
+                        console.log("Enter");
+                        droppableContainer.classList.add("drag-over");
+                    },
+                    leave: function () {
+                        console.log("leave");
+                        droppableContainer.classList.remove("drag-over");
+                    },
+                });
+            
         }
     }
     widget.card = card;
