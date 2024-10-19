@@ -5,7 +5,7 @@ require.config({
     }
 });
 
-define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData","EmersonTest/components/dragAndDrop","css!EmersonTest/styles/revstyles.css","css!bootstrapCss"], function (DataDragAndDrop, WAFData,dragAndDropComp) {
+define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop","EmersonTest/components/dragAndDrop","css!EmersonTest/styles/revstyles.css","css!bootstrapCss"], function (DataDragAndDrop,dragAndDropComp) {
 
     var card = {
         showCard: function (data) {
