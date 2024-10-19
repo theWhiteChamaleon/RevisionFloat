@@ -5,7 +5,7 @@ require.config({
     }
 });
 
-define("EmersonTest/components/card", ["EmersonTest/components/dragAndDrop","DS/DataDragAndDrop/DataDragAndDrop","css!EmersonTest/styles/revstyles.css","css!bootstrapCss"], function (dragAndDropComp,DataDragAndDrop) {
+define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop","css!EmersonTest/styles/revstyles.css","css!bootstrapCss"], function (DataDragAndDrop) {
 
     var card = {
         showCard: function (data) {
@@ -51,26 +51,7 @@ define("EmersonTest/components/card", ["EmersonTest/components/dragAndDrop","DS/
 
             widget.body.innerHTML = cardHTML;
 
-            var droppableContainer = widget.body.querySelector('.card-container');
-                debugger;
-                DataDragAndDrop.droppable(droppableContainer, {
-                    drop: function (data) {
-                        console.log("data", data)
-                        droppableContainer.classList.remove("drag-over");
-
-                        var dropedObject = JSON.parse(data);
-                        dragAndDropComp.getDroppedObjectInfo(dropedObject.data.items);
-
-                    },
-                    enter: function () {
-                        console.log("Enter");
-                        droppableContainer.classList.add("drag-over");
-                    },
-                    leave: function () {
-                        console.log("leave");
-                        droppableContainer.classList.remove("drag-over");
-                    },
-                });
+            
             
         }
     }
