@@ -5,7 +5,7 @@ require.config({
 });
 
 define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData", "EmersonTest/components/card",
-    "EmersonTest/components/table", "EmersonTest/components/commonServices","css!bootstrapCss"],
+    "EmersonTest/components/table", "EmersonTest/components/commonServices", "css!bootstrapCss"],
     function (DataDragAndDrop, WAFData, card, whereUsedTable, commonServices) {
 
         var dragAndDropComp = {
@@ -38,7 +38,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
 
                 widget.body.innerHTML = temp;
                 var droppableContainer = widget.body.querySelector('.droppableContainer');
-                debugger;
+                
                 DataDragAndDrop.droppable(droppableContainer, {
                     drop: function (data) {
                         console.log("data", data)
@@ -142,6 +142,27 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                                 dragAndDropComp.dataObject = dataResp3.member[0];
                                 dragAndDropComp.getAllRevisions(dataResp3.member[0]);
                                 // dragAndDropComp.getAllWhereUsedOfRevison(dataResp3.member[0]);
+
+                                var droppableContainer = widget.body.querySelector('.card-container');
+                                
+                                DataDragAndDrop.droppable(droppableContainer, {
+                                    drop: function (data) {
+                                        console.log("data", data)
+                                        droppableContainer.classList.remove("drag-over");
+
+                                        var dropedObject = JSON.parse(data);
+                                        dragAndDropComp.getDroppedObjectInfo(dropedObject.data.items);
+
+                                    },
+                                    enter: function () {
+                                        console.log("Enter");
+                                        droppableContainer.classList.add("drag-over");
+                                    },
+                                    leave: function () {
+                                        console.log("leave");
+                                        droppableContainer.classList.remove("drag-over");
+                                    },
+                                });
                             }
                         });
 
@@ -246,7 +267,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                             console.log("dataResp3", dataResp3);
                             let childID = dataResp3.member[0].id;
                             let parentList = dataResp3.member[0]["dseng:EngInstance"].member;
-                            Promise.all(parentList.map(parent => dragAndDropComp.getParentInfo(parent,childID,data.revision))).then(() => {
+                            Promise.all(parentList.map(parent => dragAndDropComp.getParentInfo(parent, childID, data.revision))).then(() => {
                                 resolve();
                             })
 
@@ -305,12 +326,12 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                             //     }).then(() => {
                             //         resolve();
                             //     });
-                                
-                                // console.log("dragAndDropComp.tableData", dragAndDropComp.tableData);
-                            //});
+
+                            // console.log("dragAndDropComp.tableData", dragAndDropComp.tableData);
+                            // });
 
 
-                            
+
                         }
                     });
                 });
@@ -320,58 +341,58 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
 
             ], prepareDataForTable: function (data) {
 
-            }, getParentInfo: function (parent,childID,connectedcCildRev) {
+            }, getParentInfo: function (parent, childID, connectedcCildRev) {
                 dragAndDropComp.tableData.push(
-                    { parentID: parent.parentObject.identifier, "childID": childID, "connectedcCildRev":connectedcCildRev }
+                    { parentID: parent.parentObject.identifier, "childID": childID, "connectedcCildRev": connectedcCildRev }
                 )
 
                 return new Promise((resolve) => {
                     let partInfoURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
-                // Get Parent infomration to be displayed in the table.
-                partInfoURL += parent.parentObject.identifier;
-                partInfoURL += "?$mask=dsmveng:EngItemMask.Details";
-                console.log("finalURL", partInfoURL);
-                WAFData.authenticatedRequest(partInfoURL, {
-                    method: "Get",
-                    headers: dragAndDropComp.csrfHeaders,
-                    data: {
-                    },
-                    timeout: 150000,
-                    type: "json",
-                    onComplete: function (dataRespParent, headerRespParent) {
+                    // Get Parent infomration to be displayed in the table.
+                    partInfoURL += parent.parentObject.identifier;
+                    partInfoURL += "?$mask=dsmveng:EngItemMask.Details";
+                    console.log("finalURL", partInfoURL);
+                    WAFData.authenticatedRequest(partInfoURL, {
+                        method: "Get",
+                        headers: dragAndDropComp.csrfHeaders,
+                        data: {
+                        },
+                        timeout: 150000,
+                        type: "json",
+                        onComplete: function (dataRespParent, headerRespParent) {
 
-                        const valuesToDisplay = ["id", "title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
-                        droppedData = dataRespParent.member[0];
-                        var filteredData = {};
-                        function extractValues(obj, keys) {
-                            let result = {};
-                            for (let key in obj) {
-                                if (obj.hasOwnProperty(key)) {
-                                    if (keys.includes(key)) {
-                                        result[key] = obj[key];
-                                    } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-                                        let nestedResult = extractValues(obj[key], keys);
-                                        if (Object.keys(nestedResult).length > 0) {
-                                            result = { ...result, ...nestedResult };
+                            const valuesToDisplay = ["id", "title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
+                            droppedData = dataRespParent.member[0];
+                            var filteredData = {};
+                            function extractValues(obj, keys) {
+                                let result = {};
+                                for (let key in obj) {
+                                    if (obj.hasOwnProperty(key)) {
+                                        if (keys.includes(key)) {
+                                            result[key] = obj[key];
+                                        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                                            let nestedResult = extractValues(obj[key], keys);
+                                            if (Object.keys(nestedResult).length > 0) {
+                                                result = { ...result, ...nestedResult };
+                                            }
                                         }
                                     }
                                 }
+                                return result;
                             }
-                            return result;
+
+                            filteredData = extractValues(droppedData, valuesToDisplay);
+                            console.log("filteredData", filteredData);
+
+                            // Add filteredData to the object in dragAndDropComp.tableData where parentID matches the id in filteredData
+                            dragAndDropComp.tableData.forEach(item => {
+                                if (item.parentID === filteredData.id) {
+                                    Object.assign(item, filteredData);
+                                }
+                            });
+                            resolve();
                         }
-
-                        filteredData = extractValues(droppedData, valuesToDisplay);
-                        console.log("filteredData", filteredData);
-
-                        // Add filteredData to the object in dragAndDropComp.tableData where parentID matches the id in filteredData
-                        dragAndDropComp.tableData.forEach(item => {
-                            if (item.parentID === filteredData.id) {
-                                Object.assign(item, filteredData);
-                            }
-                        });
-                        resolve();
-                    }
-                });
+                    });
                 });
             }
         }
