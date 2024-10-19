@@ -17,16 +17,19 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
     var whereUsedTable = {
         showTable: function (data) {
 
-            // Get latest revision detials 
-            var highestRev = data.reduce((max, item) => {
-                return item.connectedcCildRev > max ? item.connectedcCildRev : max;
-            }, data[0].connectedcCildRev);
-
-            // Add isLatestRevision property to each data object
-            data.forEach(item => {
-                item.isLatestRevision = item.connectedcCildRev === highestRev;
-                item.toBeRevision = item.connectedcCildRev === highestRev ? "-" : highestRev;
-            });
+            // Get latest revision detials
+            if (data.length>0) {
+                var highestRev = data.reduce((max, item) => {
+                    return item.connectedcCildRev > max ? item.connectedcCildRev : max;
+                }, data[0].connectedcCildRev);
+    
+                // Add isLatestRevision property to each data object
+                data.forEach(item => {
+                    item.isLatestRevision = item.connectedcCildRev === highestRev;
+                    item.toBeRevision = item.connectedcCildRev === highestRev ? "-" : highestRev;
+                });
+            } 
+           
 
             // Create Tabulator table
             var tableDiv = document.createElement('div');
@@ -40,6 +43,9 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
                 selectableRows:true,
                 maxHeight:"400px",
                 dataTree:true,
+                persistence:{
+                    columns: true, //persist column layout
+                },
                 columnDefaults:{
                     tooltip:true,
                 },
