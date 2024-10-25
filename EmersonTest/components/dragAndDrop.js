@@ -79,6 +79,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                 // URLs
                 let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
                 let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
+                let cadSearchURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dsxcad/dsxcad:Product/search";
 
                 WAFData.proxifiedRequest(csrfURL, {
                     method: "Get",
@@ -113,9 +114,40 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                             type: "json",
                             onComplete: function (dataResp3, headerResp3) {
                                 console.log("dataResp3", dataResp3);
+                                
+                                // Check if object is CAD object
+                                
+                                cadSearchURL += "?$searchStr=";
+                                cadSearchURL += data[0].displayName;
+                                cadSearchURL += "?$mask=dsmvxcad:xCADProductMask.EnterpriseDetails";
+                                WAFData.authenticatedRequest(cadSearchURL, {
+                                    method: "Get",
+                                    headers: myHeaders,
+                                    data: {
+                                    },
+                                    timeout: 150000,
+                                    type: "json",
+                                    onComplete: function (dataResp4, headerResp4) {
+                                        let valuesToDisplay = ["title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
+                                        if (dataResp4.member.length > 0) {
+                                            valuesToDisplay.push("cadorigin");
+                                            dragAndDropComp.showDroppedObjDetails(dataResp4,valuesToDisplay);
+                                        } else {
+                                            dragAndDropComp.showDroppedObjDetails(dataResp3,valuesToDisplay);
+                                        }
+                                    },
+                                    onFailure: function (errorResp) {
 
+                                    }});
+                                
+                            }
+                        });
 
-                                const valuesToDisplay = ["title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
+                    }
+                });
+            },showDroppedObjDetails: function (dataResp3,valuesToDisplay) {
+                
+                
                                 droppedData = dataResp3.member[0];
                                 var filteredData = {};
                                 function extractValues(obj, keys) {
@@ -163,11 +195,6 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                                         droppableContainer.classList.remove("drag-over");
                                     },
                                 });
-                            }
-                        });
-
-                    }
-                });
             }, getAllRevisions: function (data) {
 
                 let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dslc/version/getGraph";
