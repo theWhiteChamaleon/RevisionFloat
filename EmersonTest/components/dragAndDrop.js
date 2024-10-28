@@ -118,8 +118,8 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                                 // Check if object is CAD object
                                 
                                 cadSearchURL += "?$searchStr=";
-                                cadSearchURL += data[0].displayName;
-                                cadSearchURL += "?$mask=dsmvxcad:xCADProductMask.EnterpriseDetails";
+                                cadSearchURL += "\""+data[0].displayName+"\"";
+                                cadSearchURL += "&$mask=dsmvxcad:xCADProductMask.EnterpriseDetails";
                                 WAFData.authenticatedRequest(cadSearchURL, {
                                     method: "Get",
                                     headers: myHeaders,
@@ -130,6 +130,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                                     onComplete: function (dataResp4, headerResp4) {
                                         let valuesToDisplay = ["title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
                                         if (dataResp4.member.length > 0) {
+                                            dataResp4.member[0].description = dataResp3.member[0].description;
                                             valuesToDisplay.push("cadorigin");
                                             dragAndDropComp.showDroppedObjDetails(dataResp4,valuesToDisplay);
                                         } else {
