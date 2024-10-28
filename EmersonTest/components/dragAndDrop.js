@@ -38,7 +38,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
 
                 widget.body.innerHTML = temp;
                 var droppableContainer = widget.body.querySelector('.droppableContainer');
-                
+
                 DataDragAndDrop.droppable(droppableContainer, {
                     drop: function (data) {
                         console.log("data", data)
@@ -64,7 +64,8 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                         droppableContainer.classList.remove("drag-over");
                     },
                 });
-            }, getDroppedObjectInfo: function (data) {
+            } ,isCADObject: false
+            ,getDroppedObjectInfo: function (data) {
                 if (data.length > 1) {
                     alert("Please drop only one object");
                     return;
@@ -114,11 +115,11 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                             type: "json",
                             onComplete: function (dataResp3, headerResp3) {
                                 console.log("dataResp3", dataResp3);
-                                
+
                                 // Check if object is CAD object
-                                
+
                                 cadSearchURL += "?$searchStr=";
-                                cadSearchURL += "\""+data[0].displayName+"\"";
+                                cadSearchURL += "\"" + data[0].displayName + "\"";
                                 cadSearchURL += "&$mask=dsmvxcad:xCADProductMask.EnterpriseDetails";
                                 WAFData.authenticatedRequest(cadSearchURL, {
                                     method: "Get",
@@ -132,70 +133,72 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                                         if (dataResp4.member.length > 0) {
                                             dataResp4.member[0].description = dataResp3.member[0].description;
                                             valuesToDisplay.push("cadorigin");
-                                            dragAndDropComp.showDroppedObjDetails(dataResp4,valuesToDisplay);
+                                            dragAndDropComp.showDroppedObjDetails(dataResp4, valuesToDisplay);
+                                            dragAndDropComp.isCADObject = true;
                                         } else {
-                                            dragAndDropComp.showDroppedObjDetails(dataResp3,valuesToDisplay);
+                                            dragAndDropComp.showDroppedObjDetails(dataResp3, valuesToDisplay);
                                         }
                                     },
                                     onFailure: function (errorResp) {
 
-                                    }});
-                                
+                                    }
+                                });
+
                             }
                         });
 
                     }
                 });
-            },showDroppedObjDetails: function (dataResp3,valuesToDisplay) {
-                
-                
-                                droppedData = dataResp3.member[0];
-                                var filteredData = {};
-                                function extractValues(obj, keys) {
-                                    let result = {};
-                                    for (let key in obj) {
-                                        if (obj.hasOwnProperty(key)) {
-                                            if (keys.includes(key)) {
-                                                result[key] = obj[key];
-                                            } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-                                                let nestedResult = extractValues(obj[key], keys);
-                                                if (Object.keys(nestedResult).length > 0) {
-                                                    result = { ...result, ...nestedResult };
-                                                }
-                                            }
-                                        }
-                                    }
-                                    return result;
+            }, showDroppedObjDetails: function (dataResp3, valuesToDisplay) {
+
+
+                droppedData = dataResp3.member[0];
+                var filteredData = {};
+                function extractValues(obj, keys) {
+                    let result = {};
+                    for (let key in obj) {
+                        if (obj.hasOwnProperty(key)) {
+                            if (keys.includes(key)) {
+                                result[key] = obj[key];
+                            } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                                let nestedResult = extractValues(obj[key], keys);
+                                if (Object.keys(nestedResult).length > 0) {
+                                    result = { ...result, ...nestedResult };
                                 }
+                            }
+                        }
+                    }
+                    return result;
+                }
 
-                                filteredData = extractValues(droppedData, valuesToDisplay);
-                                console.log("filteredData", filteredData);
+                filteredData = extractValues(droppedData, valuesToDisplay);
+                console.log("filteredData", filteredData);
 
-                                card.showCard(filteredData);
-                                dragAndDropComp.dataObject = dataResp3.member[0];
-                                dragAndDropComp.getAllRevisions(dataResp3.member[0]);
-                                // dragAndDropComp.getAllWhereUsedOfRevison(dataResp3.member[0]);
+                card.showCard(filteredData);
+                dragAndDropComp.dataObject = dataResp3.member[0];
+                dragAndDropComp.getAllRevisions(dataResp3.member[0]);
+                // dragAndDropComp.getAllWhereUsedOfRevison(dataResp3.member[0]);
 
-                                var droppableContainer = widget.body.querySelector('.card-container');
-                                
-                                DataDragAndDrop.droppable(droppableContainer, {
-                                    drop: function (data) {
-                                        console.log("data", data)
-                                        droppableContainer.classList.remove("drag-over");
+                var droppableContainer = widget.body.querySelector('.card-container');
 
-                                        var dropedObject = JSON.parse(data);
-                                        dragAndDropComp.getDroppedObjectInfo(dropedObject.data.items);
+                DataDragAndDrop.droppable(droppableContainer, {
+                    drop: function (data) {
+                        console.log("data", data)
+                        droppableContainer.classList.remove("drag-over");
 
-                                    },
-                                    enter: function () {
-                                        console.log("Enter");
-                                        droppableContainer.classList.add("drag-over");
-                                    },
-                                    leave: function () {
-                                        console.log("leave");
-                                        droppableContainer.classList.remove("drag-over");
-                                    },
-                                });
+                        var dropedObject = JSON.parse(data);
+                        dragAndDropComp.getDroppedObjectInfo(dropedObject.data.items);
+
+                    },
+                    enter: function () {
+                        console.log("Enter");
+                        droppableContainer.classList.add("drag-over");
+                    },
+                    leave: function () {
+                        console.log("leave");
+                        droppableContainer.classList.remove("drag-over");
+                    },
+                });
             }, getAllRevisions: function (data) {
 
                 let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dslc/version/getGraph";
@@ -279,6 +282,10 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
 
                     dragAndDropComp["Content-Type"] = "application/json";
 
+                    if (dragAndDropComp.isCADObject) {
+                        data.relativePath = data.relativePath.replace("dseng", "dsxcad").replace("EngItem", "Product");
+                    }
+
                     var bodydata = {
                         "referencedObjects": [
                             data
@@ -298,67 +305,6 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                             Promise.all(parentList.map(parent => dragAndDropComp.getParentInfo(parent, childID, data.revision))).then(() => {
                                 resolve();
                             })
-
-                            // let engInstance = dataResp3.member[0]["dseng:EngInstance"].member.forEach((parentItem) => {
-                            //     dragAndDropComp.tableData.push(
-                            //         { parentID: parentItem.parentObject.identifier, "childID": childID, "connectedcCildRev":data.revision }
-                            //     )
-
-                            //     new Promise((resolve) => {
-                            //         let partInfoURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
-                            //     // Get Parent infomration to be displayed in the table.
-                            //     partInfoURL += parentItem.parentObject.identifier;
-                            //     partInfoURL += "?$mask=dsmveng:EngItemMask.Details";
-                            //     console.log("finalURL", partInfoURL);
-                            //     WAFData.authenticatedRequest(partInfoURL, {
-                            //         method: "Get",
-                            //         headers: dragAndDropComp.csrfHeaders,
-                            //         data: {
-                            //         },
-                            //         timeout: 150000,
-                            //         type: "json",
-                            //         onComplete: function (dataRespParent, headerRespParent) {
-
-                            //             const valuesToDisplay = ["id", "title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
-                            //             droppedData = dataRespParent.member[0];
-                            //             var filteredData = {};
-                            //             function extractValues(obj, keys) {
-                            //                 let result = {};
-                            //                 for (let key in obj) {
-                            //                     if (obj.hasOwnProperty(key)) {
-                            //                         if (keys.includes(key)) {
-                            //                             result[key] = obj[key];
-                            //                         } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-                            //                             let nestedResult = extractValues(obj[key], keys);
-                            //                             if (Object.keys(nestedResult).length > 0) {
-                            //                                 result = { ...result, ...nestedResult };
-                            //                             }
-                            //                         }
-                            //                     }
-                            //                 }
-                            //                 return result;
-                            //             }
-
-                            //             filteredData = extractValues(droppedData, valuesToDisplay);
-                            //             console.log("filteredData", filteredData);
-
-                            //             // Add filteredData to the object in dragAndDropComp.tableData where parentID matches the id in filteredData
-                            //             dragAndDropComp.tableData.forEach(item => {
-                            //                 if (item.parentID === filteredData.id) {
-                            //                     Object.assign(item, filteredData);
-                            //                 }
-                            //             });
-                            //             resolve();
-                            //         }
-                            //     });
-                            //     }).then(() => {
-                            //         resolve();
-                            //     });
-
-                            // console.log("dragAndDropComp.tableData", dragAndDropComp.tableData);
-                            // });
-
-
 
                         }
                     });
