@@ -283,7 +283,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                     dragAndDropComp["Content-Type"] = "application/json";
 
                     if (dragAndDropComp.isCADObject) {
-                        data.relativePath = data.relativePath.replace("dseng", "dsxcad").replace("EngItem", "Product");
+                        data.relativePath = data.relativePath.split("dseng").join("dsxcad").split("EngItem").join("Product");
                     }
 
                     var bodydata = {
@@ -324,7 +324,12 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                     let partInfoURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
                     // Get Parent infomration to be displayed in the table.
                     partInfoURL += parent.parentObject.identifier;
-                    partInfoURL += "?$mask=dsmveng:EngItemMask.Details";
+                    if (dragAndDropComp.isCADObject) {
+                        partInfoURL += "?$mask=dsmvxcad:xCADProductMask.EnterpriseDetails";
+                    } else {
+                        partInfoURL += "?$mask=dsmveng:EngItemMask.Details";
+                    }
+                    
                     console.log("finalURL", partInfoURL);
                     WAFData.authenticatedRequest(partInfoURL, {
                         method: "Get",
@@ -334,8 +339,12 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                         timeout: 150000,
                         type: "json",
                         onComplete: function (dataRespParent, headerRespParent) {
-
-                            const valuesToDisplay = ["id", "title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
+                            let valuesToDisplay = ["id", "title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
+                            
+                            if (dragAndDropComp.isCADObject) {
+                                valuesToDisplay.push("cadorigin");
+                            } 
+                           
                             droppedData = dataRespParent.member[0];
                             var filteredData = {};
                             function extractValues(obj, keys) {
