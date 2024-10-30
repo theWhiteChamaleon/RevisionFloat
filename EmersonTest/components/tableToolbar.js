@@ -5,15 +5,15 @@ require.config({
     }
 });
 
-define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData","css!EmersonTest/styles/revstyles.css","css!bootstrapCss"], function (DataDragAndDrop, WAFData) {
+define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData","DS/DataDragAndDrop/table","css!EmersonTest/styles/revstyles.css","css!bootstrapCss"], function (DataDragAndDrop, WAFData, customTable) {
 
     var tableToolbar = {
         showToolbar: function (data) {
             
             data = [
-                { buttonLabel: "Replace in All", onClick: function() { alert('Action Initiated, You will be notified on completion'); } },
-                { buttonLabel: "Replace in Selected", onClick: function() { alert('Action Initiated, You will be notified on completion'); } },
-                { buttonLabel: "Replace in My Collaborative Space", onClick: function() { alert('Action Initiated, You will be notified on completion'); } }
+                { buttonLabel: "Select all", onClick: customTable.selectAll },
+                { buttonLabel: "De-Select all", onClick: customTable.deselectAll },
+                { buttonLabel: "Select items in my Collaborative Space", onClick: customTable.selectMyCollbSpaceObjs }
             ];
 
 
@@ -36,7 +36,7 @@ define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDr
             parentElement.insertBefore(tableToobarDiv, tableElement);
 
             // Add onclick event listeners to the buttons
-            var buttons = document.getElementsByTagName('button');
+            var buttons = tableToolbarDiv.getElementsByTagName('button');
             for (let i = 0; i < buttons.length; i++) {
                 buttons[i].onclick = data[i].onClick;
             }
