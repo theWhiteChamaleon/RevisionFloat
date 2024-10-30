@@ -136,6 +136,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                                             dragAndDropComp.showDroppedObjDetails(dataResp4, valuesToDisplay);
                                             dragAndDropComp.isCADObject = true;
                                         } else {
+                                            dragAndDropComp.isCADObject = false;
                                             dragAndDropComp.showDroppedObjDetails(dataResp3, valuesToDisplay);
                                         }
                                     },
@@ -317,7 +318,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
 
             }, getParentInfo: function (parent, childID, connectedcCildRev) {
                 dragAndDropComp.tableData.push(
-                    { parentID: parent.parentObject.identifier, "childID": childID, "connectedcCildRev": connectedcCildRev }
+                    { parentID: parent.parentObject.identifier,relativePath: parent.relativePath,"childID": childID, "connectedcCildRev": connectedcCildRev }
                 )
 
                 return new Promise((resolve) => {
