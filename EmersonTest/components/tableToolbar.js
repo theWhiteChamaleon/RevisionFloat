@@ -8,12 +8,12 @@ require.config({
 define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData","EmersonTest/components/table","css!EmersonTest/styles/revstyles.css","css!bootstrapCss"], function (DataDragAndDrop, WAFData, customTable) {
 
     var tableToolbar = {
-        showToolbar: function (data) {
+        showToolbar: function (tableData) {
             
             data = [
-                { buttonLabel: "Select all", onClick: customTable.selectAll },
-                { buttonLabel: "De-Select all", onClick: customTable.deselectAll },
-                { buttonLabel: "Select items in my Collaborative Space", onClick: customTable.selectMyCollbSpaceObjs }
+                { buttonLabel: "Select all", onClick: tableToolbar.selectAll(tableData) },
+                { buttonLabel: "De-Select all", onClick: tableToolbar.deselectAll(tableData) },
+                { buttonLabel: "Select items in my Collaborative Space", onClick: tableToolbar.selectMyCollbSpaceObjs }
             ];
 
 
@@ -41,6 +41,12 @@ define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDr
                 buttons[i].onclick = data[i].onClick;
             }
             
+        },selectAll: function (tableData) {
+            tableData.selectRow();
+        },deselectAll: function (tableData) {
+            tableData.deselectRow();
+        },selectMyCollbSpaceObjs: function (tableData) {
+            tableData.selectRow([1,2]);
         }
     }
     widget.tableToolbar = tableToolbar;
