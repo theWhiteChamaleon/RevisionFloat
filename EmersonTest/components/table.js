@@ -76,15 +76,9 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
                 ],
             });
             whereUsedTable.tableData = table;
-            tableToolbar.showToolbar();
+            tableToolbar.showToolbar(table);
 
 
-        },selectAll: function () {
-            whereUsedTable.tableData.selectRow();
-        },deselectAll: function () {
-            whereUsedTable.tableData.deselectRow();
-        },selectMyCollbSpaceObjs: function () {
-            table.selectRow([1,2]);
         }, updateAllRevision: function () {
 
         }, loginWithSuperUser: function () {
