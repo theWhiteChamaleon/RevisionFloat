@@ -11,8 +11,8 @@ define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDr
         showToolbar: function (tableData) {
             
             data = [
-                { buttonLabel: "Select all", onClick: tableToolbar.selectAll(tableData) },
-                { buttonLabel: "De-Select all", onClick: tableToolbar.deselectAll(tableData) },
+                { buttonLabel: "Select all", onClick: tableToolbar.selectAll },
+                { buttonLabel: "De-Select all", onClick: tableToolbar.deselectAll },
                 { buttonLabel: "Select items in my Collaborative Space", onClick: tableToolbar.selectMyCollbSpaceObjs }
             ];
 
@@ -36,7 +36,7 @@ define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDr
             parentElement.insertBefore(tableToobarDiv, tableElement);
 
             // Add onclick event listeners to the buttons
-            var buttons = tableToolbarDiv.getElementsByTagName('button');
+            var buttons = tableToobarDiv.getElementsByTagName('button');
             for (let i = 0; i < buttons.length; i++) {
                 buttons[i].onclick = data[i].onClick;
             }
