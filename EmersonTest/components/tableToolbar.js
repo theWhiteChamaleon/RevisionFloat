@@ -41,12 +41,12 @@ define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDr
                 buttons[i].onclick = data[i].onClick;
             }
             
-        },selectAll: function (tableData) {
-            tableData.selectRow();
+        },selectAll: function () {
+            widget.whereUsedTable.tableData.selectRow();
         },deselectAll: function (tableData) {
-            tableData.deselectRow();
+            widget.whereUsedTable.tableData.selectRow();
         },selectMyCollbSpaceObjs: function (tableData) {
-            tableData.selectRow([1,2]);
+            
         }
     }
     widget.tableToolbar = tableToolbar;
