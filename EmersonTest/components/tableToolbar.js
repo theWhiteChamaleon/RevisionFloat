@@ -13,14 +13,16 @@ define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDr
             data = [
                 { buttonLabel: "Select all", onClick: tableToolbar.selectAll },
                 { buttonLabel: "De-Select all", onClick: tableToolbar.deselectAll },
-                { buttonLabel: "Select items in my Collaborative Space", onClick: tableToolbar.selectMyCollbSpaceObjs }
+                { buttonLabel: "Select items in my Collaborative Space", onClick: tableToolbar.selectMyCollbSpaceObjs },
+                { buttonLabel: "Replace", onClick: tableToolbar.replaceObjects, style:"margin-left: auto; margin-right:5px" },
             ];
+
 
 
 
             var toobarHTML = '';
             data.forEach(button => {
-                toobarHTML += `<button class="btn btn-primary">${button.buttonLabel}</button>`;
+                toobarHTML += `<button class="btn btn-primary" ${button.style ? `style="${button.style}"` : ''}>${button.buttonLabel}</button>`;
             });
            
 
@@ -44,9 +46,11 @@ define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDr
         },selectAll: function () {
             widget.whereUsedTable.tableData.selectRow();
         },deselectAll: function (tableData) {
-            widget.whereUsedTable.tableData.selectRow();
+            widget.whereUsedTable.tableData.deselectRow();
         },selectMyCollbSpaceObjs: function (tableData) {
             
+        }, replaceObjects: function () {
+
         }
     }
     widget.tableToolbar = tableToolbar;
