@@ -16,13 +16,23 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
 
     var whereUsedTable = {
         tableData: {},
+        highestRevID: "",
         showTable: function (data) {
 
             // Get latest revision detials
             if (data.length > 0) {
+                var highestRevID = "";
                 var highestRev = data.reduce((max, item) => {
-                    return item.connectedcCildRev > max ? item.connectedcCildRev : max;
-                }, data[0].connectedcCildRev);
+                    if (item.connectedcCildRev > max.connectedcCildRev) {
+                        highestRevID = item.childID;
+                        return item;
+                    }
+                    return max;
+                }, data[0]).connectedcCildRev;
+                whereUsedTable.highestRevID = highestRevID;
+
+                // only show that data where the parents are connected
+                data = data.filter(item => item.parentID);
 
                 // Add isLatestRevision property to each data object
                 data.forEach(item => {
