@@ -64,8 +64,8 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                         droppableContainer.classList.remove("drag-over");
                     },
                 });
-            } ,isCADObject: false
-            ,getDroppedObjectInfo: function (data) {
+            }, isCADObject: false
+            , getDroppedObjectInfo: function (data) {
                 if (data.length > 1) {
                     alert("Please drop only one object");
                     return;
@@ -303,6 +303,11 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                             console.log("dataResp3", dataResp3);
                             let childID = dataResp3.member[0].id;
                             let parentList = dataResp3.member[0]["dseng:EngInstance"].member;
+                            if (parentList.length == 0) {
+                                dragAndDropComp.tableData.push(
+                                    { "childID": childID, "connectedcCildRev": data.revision })
+
+                            }
                             Promise.all(parentList.map(parent => dragAndDropComp.getParentInfo(parent, childID, data.revision))).then(() => {
                                 resolve();
                             })
@@ -318,7 +323,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
 
             }, getParentInfo: function (parent, childID, connectedcCildRev) {
                 dragAndDropComp.tableData.push(
-                    { parentID: parent.parentObject.identifier,relativePath: parent.relativePath,"childID": childID, "connectedcCildRev": connectedcCildRev }
+                    { parentID: parent.parentObject.identifier, relativePath: parent.relativePath, "childID": childID, "connectedcCildRev": connectedcCildRev }
                 )
 
                 return new Promise((resolve) => {
@@ -330,7 +335,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                     } else {
                         partInfoURL += "?$mask=dsmveng:EngItemMask.Details";
                     }
-                    
+
                     console.log("finalURL", partInfoURL);
                     WAFData.authenticatedRequest(partInfoURL, {
                         method: "Get",
@@ -341,11 +346,11 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                         type: "json",
                         onComplete: function (dataRespParent, headerRespParent) {
                             let valuesToDisplay = ["id", "title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
-                            
+
                             if (dragAndDropComp.isCADObject) {
                                 valuesToDisplay.push("cadorigin");
-                            } 
-                           
+                            }
+
                             droppedData = dataRespParent.member[0];
                             var filteredData = {};
                             function extractValues(obj, keys) {
