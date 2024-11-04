@@ -90,12 +90,21 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
 
 
         }, updateAllRevision: function () {
-
-        }, loginWithSuperUser: function () {
+            let selectedRowsArray = widget.whereUsedTable.tableData.getSelectedRows();
+            if (selectedRowsArray.length==0) {
+                alert("Please select atleaset one row to update revision");
+            } else {
+                alert("Replacement process has been initiated");
+                selectedRowsArray.forEach(selectedRow => {
+                    let referenceURL = selectedRow.getData().relativePath;
+                    whereUsedTable.loginWithSuperUser(referenceURL);
+                });
+            }
+        }, loginWithSuperUser: function (referenceURL) {
             let loginGetURL = "https://oi000186152-eu1.iam.3dexperience.3ds.com/login?action=get_auth_params";
             let loginPostURL = "https://oi000186152-eu1.iam.3dexperience.3ds.com/login?username=amit.sonje1&password=Emersoncloud222@";
             let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
-            let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
+            let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia";
            
             WAFData.proxifiedRequest(loginGetURL, {
                 method: "Get",
@@ -140,10 +149,17 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
                                     myHeaders[csrfToken] = csrfValue;
                                     myHeaders[securityContextHeader] = securityContextValue;
 
-                                    finalURL += data[0].objectId;
-                                    finalURL += "/dseng:EngInstance/";
-                                    finalURL += data[0].instanceID;
+                                    finalURL += referenceURL;
                                     finalURL += "/replace";
+
+                                    let bodyData = {
+                                        "referencedObject": {
+                                          "source": "https://oi000186152-us1-space.3dexperience.3ds.com/enovia",
+                                          "type": "dseng:EngItem",
+                                          "identifier": "E9ADEAB60CA82E00671F60B6000016CC",
+                                          "relativePath": "/resources/v1/modeler/dseng/dseng:EngItem/E9ADEAB60CA82E00671F60B6000016CC"
+                                        }
+                                      };
 
                                     console.log("finalURL", finalURL);
                                     WAFData.authenticatedRequest(finalURL, {
