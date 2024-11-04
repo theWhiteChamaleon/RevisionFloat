@@ -50,7 +50,7 @@ define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDr
         },selectMyCollbSpaceObjs: function (tableData) {
             
         }, replaceObjects: function () {
-
+            widget.whereUsedTable.updateAllRevision();
         }
     }
     widget.tableToolbar = tableToolbar;
