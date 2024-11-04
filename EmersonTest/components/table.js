@@ -102,79 +102,136 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
             }
         }, loginWithSuperUser: function (referenceURL) {
             let loginGetURL = "https://oi000186152-eu1.iam.3dexperience.3ds.com/login?action=get_auth_params";
-            let loginPostURL = "https://oi000186152-eu1.iam.3dexperience.3ds.com/login?username=amit.sonje1&password=Emersoncloud222@";
+            let loginPostURL = "https://oi000186152-eu1.iam.3dexperience.3ds.com/login?";
             let csrfURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/application/CSRF?tenant=OI000186152"
             let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia";
            
-            WAFData.proxifiedRequest(loginGetURL, {
+            // WAFData.proxifiedRequest(loginGetURL, {
+            //     method: "Get",
+            //     headers: {
+            //     },
+            //     data: {
+            //     },
+            //     timeout: 150000,
+            //     type: "json",
+            //     onComplete: function (dataResp, headerResp) {
+
+            //         let loginTicket = dataResp.lt;
+
+            //         // call post login url 
+            //         loginPostURL += "lt=" + loginTicket;
+            //         loginPostURL += "username=amit.sonje1&password=Emersoncloud222@";
+                    
+            //         WAFData.proxifiedRequest(loginPostURL, {
+            //             method: "Post",
+            //             headers: {
+            //                  'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+            //             },
+            //             data: {
+            //             },
+            //             timeout: 150000,
+            //             type: "none",
+            //             onComplete: function (dataResp, headerResp) {
+
+            //                 WAFData.proxifiedRequest(csrfURL, {
+            //                     method: "Get",
+            //                     headers: {
+
+            //                     },
+            //                     data: {
+            //                     },
+            //                     timeout: 150000,
+            //                     type: "json",
+            //                     onComplete: function (dataRespCSRF, headerRespCSRF) {
+            //                         const csrfToken = dataRespCSRF.csrf.name;
+            //                         const csrfValue = dataRespCSRF.csrf.value;
+            //                         const securityContextHeader = 'SecurityContext';
+            //                         const securityContextValue = "ctx%3A%3AVPLMProjectAdministrator.BU-0000001.Rosemount%20Measurement";;
+            //                         const contentType = 'Content-Type';
+
+            //                         const myHeaders2 = new Object();
+            //                         myHeaders2[csrfToken] = csrfValue;
+            //                         myHeaders2[securityContextHeader] = securityContextValue;
+            //                         myHeaders2[contentType] = "application/json";
+
+            //                         finalURL += referenceURL;
+            //                         finalURL += "/replace";
+
+            //                         let bodyData2 = {
+            //                             "referencedObject": {
+            //                               "source": "https://oi000186152-us1-space.3dexperience.3ds.com/enovia",
+            //                               "type": "dseng:EngItem",
+            //                               "identifier": "E9ADEAB60CA82E00671F60B6000016CC",
+            //                               "relativePath": "/resources/v1/modeler/dseng/dseng:EngItem/E9ADEAB60CA82E00671F60B6000016CC"
+            //                             }
+            //                           };
+
+            //                         console.log("finalURL", finalURL);
+            //                         WAFData.authenticatedRequest(finalURL, {
+            //                             method: "Post",
+            //                             headers: myHeaders2,
+            //                             data: JSON.stringify(bodyData2),
+            //                             timeout: 150000,
+            //                             type: "json",
+            //                             onComplete: function (dataResp3, headerResp3) {
+            //                                 console.log("dataResp3", dataResp3);
+            //                             }, onFailure(err, errhead) {
+            //                                 console.log(err);
+            //                             }
+            //                         });
+            //                     }
+            //                 });
+            //             }, onFailure (err, errhead) {
+            //                 console.log(err);
+            //             }
+            //         });
+            //     }
+            // });
+        
+            WAFData.proxifiedRequest(csrfURL, {
                 method: "Get",
                 headers: {
+
                 },
                 data: {
                 },
                 timeout: 150000,
                 type: "json",
-                onComplete: function (dataResp, headerResp) {
+                onComplete: function (dataRespCSRF, headerRespCSRF) {
+                    const csrfToken = dataRespCSRF.csrf.name;
+                    const csrfValue = dataRespCSRF.csrf.value;
+                    const securityContextHeader = 'SecurityContext';
+                    const securityContextValue = "ctx%3A%3AVPLMProjectAdministrator.BU-0000001.Rosemount%20Measurement";;
+                    const contentType = 'Content-Type';
 
-                    let loginTicket = dataResp.lt;
+                    let myHeaders2 = widget.dragAndDropComp.csrfHeaders;
+                    myHeaders2.SecurityContext = "ctx%3A%3AVPLMProjectAdministrator.BU-0000001.Rosemount%20Measurement";
 
-                    // call post login url 
-                    loginPostURL += "&lt=" + loginTicket;
-                    WAFData.proxifiedRequest(loginPostURL, {
+                    finalURL += referenceURL;
+                    finalURL += "/replace";
+
+                    let bodyData2 = {
+                        "referencedObject": {
+                          "source": "https://oi000186152-us1-space.3dexperience.3ds.com/enovia",
+                          "type": "dseng:EngItem",
+                          "identifier": widget.whereUsedTable.highestRevID,
+                          "relativePath": "/resources/v1/modeler/dseng/dseng:EngItem/"+widget.whereUsedTable.highestRevID
+                        }
+                      };
+
+                    console.log("finalURL", finalURL);
+                      let tempURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/E9ADEAB60CA82E00671F60B6000016CC";
+                   
+                    WAFData.authenticatedRequest(finalURL, {
                         method: "Post",
-                        headers: {
-                        },
-                        data: {
-                        },
+                        headers: myHeaders2,
+                        data: JSON.stringify(bodyData2),
                         timeout: 150000,
                         type: "json",
-                        onComplete: function (dataResp, headerResp) {
-
-                            WAFData.proxifiedRequest(csrfURL, {
-                                method: "Get",
-                                headers: {
-
-                                },
-                                data: {
-                                },
-                                timeout: 150000,
-                                type: "json",
-                                onComplete: function (dataRespCSRF, headerRespCSRF) {
-                                    const csrfToken = dataRespCSRF.csrf.name;
-                                    const csrfValue = dataRespCSRF.csrf.value;
-                                    const securityContextHeader = 'SecurityContext';
-                                    const securityContextValue = "ctx%3A%3AVPLMProjectAdministrator.BU-0000001.Rosemount%20Measurement";;
-
-                                    const myHeaders = new Object();
-                                    myHeaders[csrfToken] = csrfValue;
-                                    myHeaders[securityContextHeader] = securityContextValue;
-
-                                    finalURL += referenceURL;
-                                    finalURL += "/replace";
-
-                                    let bodyData = {
-                                        "referencedObject": {
-                                          "source": "https://oi000186152-us1-space.3dexperience.3ds.com/enovia",
-                                          "type": "dseng:EngItem",
-                                          "identifier": "E9ADEAB60CA82E00671F60B6000016CC",
-                                          "relativePath": "/resources/v1/modeler/dseng/dseng:EngItem/E9ADEAB60CA82E00671F60B6000016CC"
-                                        }
-                                      };
-
-                                    console.log("finalURL", finalURL);
-                                    WAFData.authenticatedRequest(finalURL, {
-                                        method: "Post",
-                                        headers: myHeaders,
-                                        data: {
-                                        },
-                                        timeout: 150000,
-                                        type: "json",
-                                        onComplete: function (dataResp3, headerResp3) {
-                                            console.log("dataResp3", dataResp3);
-                                        }
-                                    });
-                                }
-                            });
+                        onComplete: function (dataResp3, headerResp3) {
+                            console.log("dataResp3", dataResp3);
+                        }, onFailure(err, errhead) {
+                            console.log(err);
                         }
                     });
                 }
