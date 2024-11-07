@@ -25,6 +25,7 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
                 var highestRev = data.reduce((max, item) => {
                     if (item.connectedcCildRev > max.connectedcCildRev) {
                         highestRevID = item.childID;
+                        console.log("highestRevID----------------",highestRevID);
                         return item;
                     }
                     return max;
@@ -188,7 +189,7 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
             //     }
             // });
         
-            WAFData.proxifiedRequest(csrfURL, {
+            WAFData.authenticatedRequest(csrfURL, {
                 method: "Get",
                 headers: {
 
@@ -230,6 +231,7 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
                         type: "json",
                         onComplete: function (dataResp3, headerResp3) {
                             console.log("dataResp3", dataResp3);
+                            
                         }, onFailure(err, errhead) {
                             console.log(err);
                         }
