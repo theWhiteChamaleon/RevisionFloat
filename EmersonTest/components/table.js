@@ -231,9 +231,10 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
                         type: "json",
                         onComplete: function (dataResp3, headerResp3) {
                             console.log("dataResp3", dataResp3);
-                            
+                            alert("Replacement done in a parent");
                         }, onFailure(err, errhead) {
                             console.log(err);
+                            alert("Replacement failed with error",err);
                         }
                     });
                 }
