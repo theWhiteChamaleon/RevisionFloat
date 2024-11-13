@@ -7,7 +7,7 @@
     margin: auto;
     margin-bottom: 15px;
     padding: 10px 0;
-	border-bottom: 1px solid #e2e4e3;
+    border-bottom: 1px solid #e2e4e3;
 }
 
 /* .card-boundary{
@@ -50,6 +50,7 @@
     font-size: 20px;
     font-family: Arial;
     line-height: 1.8em;
+    width: 100%;
 }
 .card-content p{
     font-weight: 500;
@@ -60,8 +61,7 @@
     font-family: Arial;
     font-size: 12px;
     margin-bottom: 0;
-    width: 275px !important;
-    border-bottom: 1px solid #e2e4e3;
+    width: 203px !important;
     margin-bottom: 5px;
 }
 .card-content p strong{
@@ -72,12 +72,11 @@
 }
 
 .tabulator{
-    border: none;
+    border: none !important;
 }
 .tabulator-row .tabulator-cell.tabulator-row-header{
     background: #f1f1f1;
 }
-/*
-.tabulator-table * {
+/* .tabulator-table * {
     border-color: #b4b6ba !important;
-}  */
+} */
