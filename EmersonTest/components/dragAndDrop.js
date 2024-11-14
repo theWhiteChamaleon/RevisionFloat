@@ -82,6 +82,10 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                 let finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dseng/dseng:EngItem/";
                 let cadSearchURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/dsxcad/dsxcad:Product/search";
 
+                if (data[0].objectType == "Document") {
+                    finalURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/v1/modeler/documents/"
+                }
+
                 WAFData.authenticatedRequest(csrfURL, {
                     method: "Get",
                     headers: {
@@ -104,7 +108,10 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                         dragAndDropComp.csrfHeaders = myHeaders;
 
                         finalURL += data[0].objectId;
-                        finalURL += "?$mask=dsmveng:EngItemMask.Details";
+                        if (data[0].objectType == "VPMReference") {
+                            finalURL += "?$mask=dsmveng:EngItemMask.Details";
+                        }
+
                         console.log("finalURL", finalURL);
                         WAFData.authenticatedRequest(finalURL, {
                             method: "Get",
@@ -116,34 +123,52 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                             onComplete: function (dataResp3, headerResp3) {
                                 console.log("dataResp3", dataResp3);
 
-                                // Check if object is CAD object
+                                let droppedObjType = "";
+                                if (dataResp3.hasOwnProperty("member")) {
+                                    droppedObjType = dataResp3.member[0].type;
+                                } else if (dataResp3.hasOwnProperty("data")) {
+                                    droppedObjType = dataResp3.data[0].type;
+                                }
 
-                                cadSearchURL += "?$searchStr=";
-                                cadSearchURL += "\"" + data[0].displayName + "\"";
-                                cadSearchURL += "&$mask=dsmvxcad:xCADProductMask.EnterpriseDetails";
-                                WAFData.authenticatedRequest(cadSearchURL, {
-                                    method: "Get",
-                                    headers: myHeaders,
-                                    data: {
-                                    },
-                                    timeout: 150000,
-                                    type: "json",
-                                    onComplete: function (dataResp4, headerResp4) {
-                                        let valuesToDisplay = ["title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
-                                        if (dataResp4.member.length > 0) {
-                                            dataResp4.member[0].description = dataResp3.member[0].description;
-                                            valuesToDisplay.push("cadorigin");
-                                            dragAndDropComp.showDroppedObjDetails(dataResp4, valuesToDisplay);
-                                            dragAndDropComp.isCADObject = true;
-                                        } else {
-                                            dragAndDropComp.isCADObject = false;
-                                            dragAndDropComp.showDroppedObjDetails(dataResp3, valuesToDisplay);
+                                if (droppedObjType == "Document") {
+
+
+                                    let valuesToDisplayDoc = ["title", "description", "type", "revision", "state", "owner", "organization", "collabspace", ];
+                                    dragAndDropComp.isCADObject = false;
+                                    let docData = dataResp3.data[0].dataelements;
+                                    docData.owner = dataResp3.data[0].relateddata.ownerInfo[0].dataelements.firstname + " " + dataResp3.data[0].relateddata.ownerInfo[0].dataelements.lastname;
+                                    dragAndDropComp.showDroppedObjDetails(docData, valuesToDisplayDoc);
+
+                                } else {
+                                    // Check if object is CAD object
+                                    cadSearchURL += "?$searchStr=";
+                                    cadSearchURL += "\"" + data[0].displayName + "\"";
+                                    cadSearchURL += "&$mask=dsmvxcad:xCADProductMask.EnterpriseDetails";
+                                    WAFData.authenticatedRequest(cadSearchURL, {
+                                        method: "Get",
+                                        headers: myHeaders,
+                                        data: {
+                                        },
+                                        timeout: 150000,
+                                        type: "json",
+                                        onComplete: function (dataResp4, headerResp4) {
+                                            let valuesToDisplayItem = ["title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
+                                            if (dataResp4.member.length > 0) {
+                                                dataResp4.member[0].description = dataResp3.member[0].description;
+                                                valuesToDisplayItem.push("cadorigin");
+                                                dragAndDropComp.showDroppedObjDetails(dataResp4, valuesToDisplayItem);
+                                                dragAndDropComp.isCADObject = true;
+                                            } else {
+                                                dragAndDropComp.isCADObject = false;
+                                                dragAndDropComp.showDroppedObjDetails(dataResp3, valuesToDisplayItem);
+                                            }
+                                        },
+                                        onFailure: function (errorResp) {
+                                            console.log("errorResp--------", errorResp);
                                         }
-                                    },
-                                    onFailure: function (errorResp) {
+                                    });
+                                }
 
-                                    }
-                                });
 
                             }
                         });
@@ -151,9 +176,13 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                     }
                 });
             }, showDroppedObjDetails: function (dataResp3, valuesToDisplay) {
+                let droppedData = {};
+                if (dataResp3.hasOwnProperty("member")) {
+                    droppedData = dataResp3.member[0];
+                } else if (dataResp3.hasOwnProperty("data")) {
+                    droppedData = dataResp3.data[0];
+                }
 
-
-                droppedData = dataResp3.member[0];
                 var filteredData = {};
                 function extractValues(obj, keys) {
                     let result = {};
