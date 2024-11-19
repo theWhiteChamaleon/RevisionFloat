@@ -41,7 +41,7 @@ define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop","css
                 } else if (key === "organization") {
                     delete metadata[key];
                     continue;
-                } else if (key === "State") {
+                } else if (key === "state") {
                     metadata["Maturity State"] = metadata[key];
                     delete metadata[key];
                     key="Maturity State";
