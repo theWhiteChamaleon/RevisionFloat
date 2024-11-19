@@ -127,7 +127,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                                 if (droppedObjType == "Document") {
 
 
-                                    let valuesToDisplayDoc = ["title", "description", "type", "revision", "state", "owner", "organization", "collabspace", ];
+                                    let valuesToDisplayDoc = ["title", "description", "type", "revision", "state", "owner", "organization", "collabspace",];
                                     dragAndDropComp.isCADObject = false;
                                     let docData = dataResp3.data[0].dataelements;
                                     docData.owner = dataResp3.data[0].relateddata.ownerInfo[0].dataelements.firstname + " " + dataResp3.data[0].relateddata.ownerInfo[0].dataelements.lastname;
@@ -146,7 +146,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                                         timeout: 150000,
                                         type: "json",
                                         onComplete: function (dataResp4, headerResp4) {
-                                            let valuesToDisplayItem = ["title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber","cadorigin"];
+                                            let valuesToDisplayItem = ["title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber", "cadorigin"];
                                             if (dataResp4.member.length > 0) {
                                                 dataResp4.member[0].description = dataResp3.member[0].description;
                                                 // valuesToDisplayItem.push("cadorigin");
@@ -283,6 +283,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                                         console.log("All revisions processed");
                                         // You can add any additional actions here
                                         console.log("dragAndDropComp.tableData", dragAndDropComp.tableData);
+                                        dragAndDropComp.getDisplayNames();
                                         whereUsedTable.showTable(dragAndDropComp.tableData);
                                         dragAndDropComp.tableData = [];
                                     })
@@ -297,6 +298,42 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
 
                     }
                 });
+
+            },setDisplayNames: function() {
+
+                let ownerValues = dragAndDropComp.tableData
+                    .filter(item => item.owner !== undefined)
+                    .map(item => item.owner)
+                    .join(', ');
+                
+                let pattern = "pattern="+valuesToSearch;
+                dragAndDropComp.getDisplayNames(pattern).then(() => {
+                    console.log("Display names have been set");
+                });
+            }, getDisplayNames: function (pattern) {
+
+                let getPersonListInfoURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/modeler/pno/person";
+                let getCollabSpaceListInfoURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/modeler/pno/collabspace";
+
+                // Get Owner display name
+                getPersonListInfoURL += "?" + pattern;
+                return new Promise((resolve) => {
+                    WAFData.authenticatedRequest(getPersonListInfoURL, {
+                        method: "Get",
+                        headers: myHeaders,
+                        // data: JSON.stringify(bodydata),
+                        // timeout: 150000,
+                        // type: "json",
+                        onComplete: function (dataResp3, headerResp3) {
+                            console.log("dataResp3", dataResp3);
+                            resolve();
+                            
+                        }
+                    });
+                });
+
+                // Get CollabSpace display Name
+
 
             }, getAllWhereUsedOfRevison: async function (data) {
 
@@ -369,13 +406,16 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                         timeout: 150000,
                         type: "json",
                         onComplete: function (dataRespParent, headerRespParent) {
-                            let valuesToDisplay = ["id", "title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
+                            let valuesToDisplay = ["id", "title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber", "cadorigin"];
 
-                            if (dragAndDropComp.isCADObject) {
-                                valuesToDisplay.push("cadorigin");
-                            }
+                            // if (dragAndDropComp.isCADObject) {
+                            //     valuesToDisplay.push("cadorigin");
+                            // }
 
                             droppedData = dataRespParent.member[0];
+                            if (!dragAndDropComp.isCADObject) {
+                                droppedData.cadorigin = "3DExperience";
+                            }
                             var filteredData = {};
                             function extractValues(obj, keys) {
                                 let result = {};
