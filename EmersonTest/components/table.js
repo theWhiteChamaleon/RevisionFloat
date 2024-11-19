@@ -79,7 +79,7 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
                     { title: "Connected Child Revision", field: "connectedcCildRev" },
                     { title: "Latest child connected", field: "isLatestRevision", formatter: "tickCross" },
                     { title: "To-Be child connected", field: "toBeRevision", },
-                    { title: "State", field: "state" },
+                    { title: "Maturity State", field: "state" },
                     { title: "Owner", field: "owner" },
                     { title: "CAD Format", field: "cadorigin" },
                     { title: "Collabspace", field: "collabspace" }
@@ -231,10 +231,9 @@ define("EmersonTest/components/table", ["DS/DataDragAndDrop/DataDragAndDrop", "D
                         type: "json",
                         onComplete: function (dataResp3, headerResp3) {
                             console.log("dataResp3", dataResp3);
-                            alert("Replacement done in a parent");
+                            
                         }, onFailure(err, errhead) {
                             console.log(err);
-                            alert("Replacement failed with error",err);
                         }
                     });
                 }
