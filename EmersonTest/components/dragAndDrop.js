@@ -46,18 +46,12 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
 
                         var dropedObject = JSON.parse(data);
                         dragAndDropComp.getDroppedObjectInfo(dropedObject.data.items);
-
-
-                        //   var objId = dropedObject.data["items"][0].objectId;
-                        //   that.objectId = objId;
-                        //   PlatformAPI.publish("DropRCAID", that.objectId) //ZSIAHBH : PLMRM-9640 Refresh - Sync
-                        //   that.dropCADisplayName = dropedObject.data["items"][0].displayName;
-                        //   that.isBtnCAReportDisabled = false;
-                        //   that.callAllMethods();
                     },
                     enter: function () {
                         console.log("Enter");
-                        droppableContainer.classList.add("drag-over");
+                        if (!droppableContainer.classList.contains("drag-over")) {
+                            droppableContainer.classList.add("drag-over");
+                        }
                     },
                     leave: function () {
                         console.log("leave");
@@ -152,14 +146,15 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                                         timeout: 150000,
                                         type: "json",
                                         onComplete: function (dataResp4, headerResp4) {
-                                            let valuesToDisplayItem = ["title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber"];
+                                            let valuesToDisplayItem = ["title", "description", "type", "revision", "state", "owner", "organization", "collabspace", "partNumber","cadorigin"];
                                             if (dataResp4.member.length > 0) {
                                                 dataResp4.member[0].description = dataResp3.member[0].description;
-                                                valuesToDisplayItem.push("cadorigin");
+                                                // valuesToDisplayItem.push("cadorigin");
                                                 dragAndDropComp.showDroppedObjDetails(dataResp4, valuesToDisplayItem);
                                                 dragAndDropComp.isCADObject = true;
                                             } else {
                                                 dragAndDropComp.isCADObject = false;
+                                                dataResp3.member[0].cadorigin = "3DExperience";
                                                 dragAndDropComp.showDroppedObjDetails(dataResp3, valuesToDisplayItem);
                                             }
                                         },
