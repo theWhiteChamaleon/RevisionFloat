@@ -41,6 +41,14 @@ define("EmersonTest/components/card", ["DS/DataDragAndDrop/DataDragAndDrop","css
                 } else if (key === "organization") {
                     delete metadata[key];
                     continue;
+                } else if (key === "State") {
+                    metadata["Maturity State"] = metadata[key];
+                    delete metadata[key];
+                    key="Maturity State";
+                } else if (key === "cadorigin") {
+                    metadata["CAD Format"] = metadata[key];
+                    delete metadata[key];
+                    key="CAD Format";
                 }
                 if (metadata.hasOwnProperty(key)) {
                     cardHTML += `<p title="${metadata[key]}"><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${metadata[key]}</p>`;
