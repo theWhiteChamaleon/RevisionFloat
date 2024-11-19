@@ -337,13 +337,13 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
 
                     let patternCollab = "pattern=" + collabSpaceValues;
                     getCollabSpaceListInfoURL += "?" + patternCollab;
-                    dragAndDropComp.getDisplayNames(getCollabSpaceListInfoURL, patternCollab).then((dataResp) => {
-                        let jsonDataResp = JSON.parse(dataResp);
+                    dragAndDropComp.getDisplayNames(getCollabSpaceListInfoURL, patternCollab).then((dataRespCollab) => {
+                        let jsonDataRespCollab = JSON.parse(dataRespCollab);
 
-                        jsonDataResp.collabspaces.forEach(collabSpace => {
-                            dragAndDropComp.tableData.forEach(item => {
-                                if (item.collabspace === collabSpace.name) {
-                                    item.collabspace = collabSpace.title;
+                        jsonDataRespCollab.collabspaces.forEach(collabSpace => {
+                            dragAndDropComp.tableData.forEach(itemCollab => {
+                                if (itemCollab.collabspace === collabSpace.name) {
+                                    itemCollab.collabspace = collabSpace.title;
                                 }
                             });
                         });
