@@ -199,7 +199,10 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                 filteredData = extractValues(droppedData, valuesToDisplay);
                 console.log("filteredData", filteredData);
 
-                card.showCard(filteredData);
+                dragAndDropComp.setDisplayNames(filteredData).then(() => {
+                    card.showCard(filteredData)
+                });
+                ;
                 dragAndDropComp.dataObject = dataResp3.member[0];
                 dragAndDropComp.getAllRevisions(dataResp3.member[0]);
                 // dragAndDropComp.getAllWhereUsedOfRevison(dataResp3.member[0]);
@@ -283,11 +286,11 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                                         console.log("All revisions processed");
                                         // You can add any additional actions here
                                         console.log("dragAndDropComp.tableData", dragAndDropComp.tableData);
-                                        dragAndDropComp.setDisplayNames().then(() => {
+                                        dragAndDropComp.setDisplayNames(dragAndDropComp.tableData).then(() => {
                                             whereUsedTable.showTable(dragAndDropComp.tableData);
                                             dragAndDropComp.tableData = [];
                                         });
-                                       
+
                                     })
                                     .catch(error => {
                                         console.error("Error processing revisions:", error);
@@ -301,53 +304,82 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                     }
                 });
 
-            }, setDisplayNames: function () {
+            }, setDisplayNames: function (rawData) {
 
                 return new Promise((resolve) => {
 
                     let getPersonListInfoURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/modeler/pno/person";
 
+                    let ownerValues = "";
+                    let isArrayBeingUpdated = false;
+                    if (Array.isArray(rawData)) {
+                        ownerValues = rawData
+                            .filter(item => item.owner !== undefined)
+                            .map(item => item.owner)
+                            .join(', ');
+                            isArrayBeingUpdated = true;
+                    } else if (typeof rawData === 'object' && rawData !== null) {
+                        ownerValues = rawData.owner;
+                    }
 
-                    let ownerValues = dragAndDropComp.tableData
-                        .filter(item => item.owner !== undefined)
-                        .map(item => item.owner)
-                        .join(', ');
 
                     let pattern = "pattern=" + ownerValues;
                     getPersonListInfoURL += "?" + pattern;
                     dragAndDropComp.getDisplayNames(getPersonListInfoURL, pattern).then((dataResp) => {
                         let jsonDataResp = JSON.parse(dataResp);
 
-                        jsonDataResp.persons.forEach(person => {
-                            dragAndDropComp.tableData.forEach(item => {
-                                if (item.owner === person.name) {
-                                    item.owner = `${person.firstname} ${person.lastname}`;
-                                }
+                        if (isArrayBeingUpdated) {
+                            jsonDataResp.persons.forEach(person => {
+                                rawData.forEach(item => {
+                                    if (item.owner === person.name) {
+                                        item.owner = `${person.firstname} ${person.lastname}`;
+                                    }
+                                });
                             });
-                        });
+                        } else {
+                            rawData.owner = `${jsonDataResp.persons[0].firstname} ${jsonDataResp.persons[0].lastname}`;
+                        }
+                        // jsonDataResp.persons.forEach(person => {
+                        //     dragAndDropComp.tableData.forEach(item => {
+                        //         if (item.owner === person.name) {
+                        //             item.owner = `${person.firstname} ${person.lastname}`;
+                        //         }
+                        //     });
+                        // });
 
                     });
 
 
                     let getCollabSpaceListInfoURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/modeler/pno/collabspace";
-                    let collabSpaceValues = dragAndDropComp.tableData
+                    let collabSpaceValues = "";
+                    if (isArrayBeingUpdated) {
+                        collabSpaceValues = rawData
                         .filter(item => item.collabspace !== undefined)
                         .map(item => item.collabspace)
                         .join(', ');
+                    } else {
+                        collabSpaceValues = rawData.collabspace;
+                    }
+                   
 
                     let patternCollab = "pattern=" + collabSpaceValues;
                     getCollabSpaceListInfoURL += "?" + patternCollab;
                     dragAndDropComp.getDisplayNames(getCollabSpaceListInfoURL, patternCollab).then((dataRespCollab) => {
                         let jsonDataRespCollab = JSON.parse(dataRespCollab);
 
-                        jsonDataRespCollab.collabspaces.forEach(collabSpace => {
-                            dragAndDropComp.tableData.forEach(itemCollab => {
-                                if (itemCollab.collabspace === collabSpace.name) {
-                                    itemCollab.collabspace = collabSpace.title;
-                                }
+                        if (isArrayBeingUpdated) {
+                            jsonDataRespCollab.collabspaces.forEach(collabSpace => {
+                                rawData.forEach(itemCollab => {
+                                    if (itemCollab.collabspace === collabSpace.name) {
+                                        itemCollab.collabspace = collabSpace.title;
+                                    }
+                                });
                             });
-                        });
-
+                        } else {
+                            rawData.collabspace = jsonDataResp.collabspaces[0].title;
+                        }
+                        
+                        resolve();
                     });
                 });
             }, getDisplayNames: function (URL, pattern) {
