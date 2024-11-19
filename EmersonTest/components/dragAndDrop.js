@@ -283,9 +283,11 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                                         console.log("All revisions processed");
                                         // You can add any additional actions here
                                         console.log("dragAndDropComp.tableData", dragAndDropComp.tableData);
-                                        dragAndDropComp.setDisplayNames();
-                                        whereUsedTable.showTable(dragAndDropComp.tableData);
-                                        dragAndDropComp.tableData = [];
+                                        dragAndDropComp.setDisplayNames().then(() => {
+                                            whereUsedTable.showTable(dragAndDropComp.tableData);
+                                            dragAndDropComp.tableData = [];
+                                        });
+                                       
                                     })
                                     .catch(error => {
                                         console.error("Error processing revisions:", error);
@@ -299,55 +301,58 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                     }
                 });
 
-            },setDisplayNames: function() {
+            }, setDisplayNames: function () {
 
-                let getPersonListInfoURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/modeler/pno/person";
-                
+                return new Promise((resolve) => {
 
-                let ownerValues = dragAndDropComp.tableData
-                    .filter(item => item.owner !== undefined)
-                    .map(item => item.owner)
-                    .join(', ');
-                
-                let pattern = "pattern="+ownerValues;
-                getPersonListInfoURL += "?" + pattern;
-                dragAndDropComp.getDisplayNames(getPersonListInfoURL,pattern).then((dataResp) => {
-                    let jsonDataResp = JSON.parse(dataResp);
+                    let getPersonListInfoURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/modeler/pno/person";
 
-                    jsonDataResp.forEach(person => {
-                        dragAndDropComp.tableData.forEach(item => {
-                            if (item.owner === person.name) {
-                                item.owner = `${person.firstname} ${person.lastname}`;
-                            }
+
+                    let ownerValues = dragAndDropComp.tableData
+                        .filter(item => item.owner !== undefined)
+                        .map(item => item.owner)
+                        .join(', ');
+
+                    let pattern = "pattern=" + ownerValues;
+                    getPersonListInfoURL += "?" + pattern;
+                    dragAndDropComp.getDisplayNames(getPersonListInfoURL, pattern).then((dataResp) => {
+                        let jsonDataResp = JSON.parse(dataResp);
+
+                        jsonDataResp.persons.forEach(person => {
+                            dragAndDropComp.tableData.forEach(item => {
+                                if (item.owner === person.name) {
+                                    item.owner = `${person.firstname} ${person.lastname}`;
+                                }
+                            });
                         });
+
                     });
-                   
-                });
 
 
-                let getCollabSpaceListInfoURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/modeler/pno/collabspace";
-                let collabSpaceValues = dragAndDropComp.tableData
-                    .filter(item => item.collabspace !== undefined)
-                    .map(item => item.collabspace)
-                    .join(', ');
-                
-                let patternCollab = "pattern="+collabSpaceValues;
-                getCollabSpaceListInfoURL += "?" + patternCollab;
-                dragAndDropComp.getDisplayNames(getCollabSpaceListInfoURL,patternCollab).then((dataResp) => {
-                    let jsonDataResp = JSON.parse(dataResp);
+                    let getCollabSpaceListInfoURL = "https://oi000186152-us1-space.3dexperience.3ds.com/enovia/resources/modeler/pno/collabspace";
+                    let collabSpaceValues = dragAndDropComp.tableData
+                        .filter(item => item.collabspace !== undefined)
+                        .map(item => item.collabspace)
+                        .join(', ');
 
-                    jsonDataResp.forEach(collabSpace => {
-                        dragAndDropComp.tableData.forEach(item => {
-                            if (item.collabspace === collabSpace.name) {
-                                item.collabspace = collabSpace.title;
-                            }
+                    let patternCollab = "pattern=" + collabSpaceValues;
+                    getCollabSpaceListInfoURL += "?" + patternCollab;
+                    dragAndDropComp.getDisplayNames(getCollabSpaceListInfoURL, patternCollab).then((dataResp) => {
+                        let jsonDataResp = JSON.parse(dataResp);
+
+                        jsonDataResp.collabspaces.forEach(collabSpace => {
+                            dragAndDropComp.tableData.forEach(item => {
+                                if (item.collabspace === collabSpace.name) {
+                                    item.collabspace = collabSpace.title;
+                                }
+                            });
                         });
-                    });
-                   
-                });
-            }, getDisplayNames: function (URL,pattern) {
 
-                
+                    });
+                });
+            }, getDisplayNames: function (URL, pattern) {
+
+
 
                 // Get Owner display name
                 URL += "?" + pattern;
@@ -361,7 +366,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                         onComplete: function (dataResp3, headerResp3) {
                             console.log("dataResp3", dataResp3);
                             resolve(dataResp3);
-                            
+
                         }
                     });
                 });
