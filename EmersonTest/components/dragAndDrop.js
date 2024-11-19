@@ -199,8 +199,8 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                 filteredData = extractValues(droppedData, valuesToDisplay);
                 console.log("filteredData", filteredData);
 
-                dragAndDropComp.setDisplayNames(filteredData).then(() => {
-                    card.showCard(filteredData)
+                dragAndDropComp.setDisplayNames(filteredData).then((updatedData) => {
+                    card.showCard(updatedData)
                 });
                 ;
                 dragAndDropComp.dataObject = dataResp3.member[0];
@@ -324,7 +324,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
 
 
                     let pattern = "pattern=" + ownerValues;
-                    getPersonListInfoURL += "?" + pattern;
+                    // getPersonListInfoURL += "?" + pattern;
                     dragAndDropComp.getDisplayNames(getPersonListInfoURL, pattern).then((dataResp) => {
                         let jsonDataResp = JSON.parse(dataResp);
 
@@ -363,7 +363,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                    
 
                     let patternCollab = "pattern=" + collabSpaceValues;
-                    getCollabSpaceListInfoURL += "?" + patternCollab;
+                    // getCollabSpaceListInfoURL += "?" + patternCollab;
                     dragAndDropComp.getDisplayNames(getCollabSpaceListInfoURL, patternCollab).then((dataRespCollab) => {
                         let jsonDataRespCollab = JSON.parse(dataRespCollab);
 
@@ -376,10 +376,10 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                                 });
                             });
                         } else {
-                            rawData.collabspace = jsonDataResp.collabspaces[0].title;
+                            rawData.collabspace = jsonDataRespCollab.collabspaces[0].title;
                         }
                         
-                        resolve();
+                        resolve(rawData);
                     });
                 });
             }, getDisplayNames: function (URL, pattern) {
