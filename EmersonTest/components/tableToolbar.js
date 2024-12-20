@@ -5,7 +5,7 @@ require.config({
     }
 });
 
-define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData","EmersonTest/components/table","UWA/Core","css!EmersonTest/styles/revstyles.css","css!bootstrapCss"], function (DataDragAndDrop, WAFData, customTable, Core) {
+define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData","UWA/Core","EmersonTest/components/table","css!EmersonTest/styles/revstyles.css","css!bootstrapCss"], function (DataDragAndDrop, WAFData, Uwacore, customTable) {
 
     var tableToolbar = {
         showToolbar: function (tableData) {
@@ -56,10 +56,10 @@ define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDr
          precond= 'flattenedtaxonomies:"types/VPMReference"';
          //precond+="NOT (physicalid:06E3A8E2C40800001EA56E5A1F8B0500)";
          var i;
-         var h = Core.Utils.getUUID();
+         var h = Uwacore.Utils.getUUID();
          var g = this;
          g.is3DSearchActive = true;
-         if (!Core.is(i)) {
+         if (!Uwacore.is(i)) {
            require(["DS/SNInfraUX/SearchCom"], function (k) {
              i = k.createSocket({
                  socket_id: h
@@ -101,7 +101,7 @@ define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDr
                  overflow: false
                }
              ];
-             if (Core.is(i)) {
+             if (Uwacore.is(i)) {
                i.dispatchEvent("RegisterContext", l);
                i.addListener("Selected_Objects_search", g.selected_Search_Objects);
                i.dispatchEvent("InContextSearch", l)
