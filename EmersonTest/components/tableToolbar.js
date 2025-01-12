@@ -79,7 +79,7 @@ define("EmersonTest/components/tableToolbar", ["DS/DataDragAndDrop/DataDragAndDr
           socket.subscribeServer("SearchComServer");
           socket.dispatchEvent("RegisterContext",searchOpts);
           var id =socket.dispatchEvent("InContextSearch",{...searchOpts,title:"test"});
-          socket.addListener("Selected_Objects_search", widget.tableToolbar.selectedSearchObjects);
+          socket.addListener("fghhjgjhg", widget.tableToolbar.selectedSearchObjects);
           console.log("---In Search-2--");
     //       count=0;
     //  let precond = "";
