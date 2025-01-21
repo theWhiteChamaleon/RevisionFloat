@@ -4,9 +4,9 @@ require.config({
     }
 });
 
-define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData", "EmersonTest/components/card",
+define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDrop", "DS/WAFData/WAFData", 'DS/PlatformAPI/PlatformAPI',"EmersonTest/components/card",
     "EmersonTest/components/table", "EmersonTest/components/commonServices", "css!bootstrapCss"],
-    function (DataDragAndDrop, WAFData, card, whereUsedTable, commonServices) {
+    function (DataDragAndDrop, WAFData,PlatformAPI, card, whereUsedTable, commonServices) {
 
         var dragAndDropComp = {
             showDroppable: function () {
@@ -64,6 +64,7 @@ define("EmersonTest/components/dragAndDrop", ["DS/DataDragAndDrop/DataDragAndDro
                     alert("Please drop only one object");
                     return;
                 } else {
+                    let user = PlatformAPI.getUser();
                     dragAndDropComp.getCSRFToken(data);
                 }
             }, csrfHeaders: [
