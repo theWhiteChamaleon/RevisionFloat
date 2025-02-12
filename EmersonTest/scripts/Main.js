@@ -76,6 +76,7 @@ define("EmersonTest/scripts/Main", [
 
             },
             updateWidget: function () {
+                console.log("-----Refresh Called----------");
                 dragAndDropComp.showDroppable();
             }, getDroppedObjectInfo: function (data) {
                 if (data.length > 1) {
