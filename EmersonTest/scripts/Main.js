@@ -15,6 +15,7 @@ define("EmersonTest/scripts/Main", [
             
             onLoad: function () {
                 // alert("In ON load 3");
+                console.log("----------On Load called------------");
                 dragAndDropComp.showDroppable();
 
 
